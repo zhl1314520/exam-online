@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exam.online.mapper.SystemLogMapper">
+
+    <resultMap id="SystemLogResultMap" type="com.exam.online.entity.SystemLog">
+        <id property="logId" column="log_id"/>
+        <result property="userType" column="user_type"/>
+        <result property="userId" column="user_id"/>
+        <result property="operation" column="operation"/>
+        <result property="operationDetail" column="operation_detail"/>
+        <result property="ipAddress" column="ip_address"/>
+        <result property="createTime" column="create_time"/>
+        <result property="userName" column="user_name"/>
+    </resultMap>
+
+    <select id="selectById" resultMap="SystemLogResultMap">
+        SELECT l.*,
+            CASE
+                WHEN l.user_type = 1 THEN (SELECT real_name FROM admin WHERE admin_id = l.user_id)
+                WHEN l.user_type = 2 THEN (SELECT real_name FROM teacher WHERE teacher_id = l.user_id)
+                WHEN l.user_type = 3 THEN (SELECT real_name FROM student WHERE student_id = l.user_id)
+            END AS user_name
+        FROM system_log l
+        WHERE l.log_id = #{logId}
+    </select>
+
+    <select id="selectAll" resultMap="SystemLogResultMap">
+        SELECT l.*,
+            CASE
+                WHEN l.user_type = 1 THEN (SELECT real_name FROM admin WHERE admin_id = l.user_id)
+                WHEN l.user_type = 2 THEN (SELECT real_name FROM teacher WHERE teacher_id = l.user_id)
+                WHEN l.user_type = 3 THEN (SELECT real_name FROM student WHERE student_id = l.user_id)
+            END AS user_name
+        FROM system_log l
+        ORDER BY l.create_time DESC
+    </select>
+
+    <select id="selectByUserType" resultMap="SystemLogResultMap">
+        SELECT l.*,
+            CASE
+                WHEN l.user_type = 1 THEN (SELECT real_name FROM admin WHERE admin_id = l.user_id)
+                WHEN l.user_type = 2 THEN (SELECT real_name FROM teacher WHERE teacher_id = l.user_id)
+                WHEN l.user_type = 3 THEN (SELECT real_name FROM student WHERE student_id = l.user_id)
+            END AS user_name
+        FROM system_log l
+        WHERE l.user_type = #{userType}
+        ORDER BY l.create_time DESC
+    </select>
+
+    <select id="selectByUserId" resultMap="SystemLogResultMap">
+        SELECT l.*,
+            CASE
+                WHEN l.user_type = 1 THEN (SELECT real_name FROM admin WHERE admin_id = l.user_id)
+                WHEN l.user_type = 2 THEN (SELECT real_name FROM teacher WHERE teacher_id = l.user_id)
+                WHEN l.user_type = 3 THEN (SELECT real_name FROM student WHERE student_id = l.user_id)
+            END AS user_name
+        FROM system_log l
+        WHERE l.user_type = #{userType} AND l.user_id = #{userId}
+        ORDER BY l.create_time DESC
+    </select>
+
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*) FROM system_log
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="logId">
+        INSERT INTO system_log (user_type, user_id, operation, operation_detail, ip_address)
+        VALUES (#{userType}, #{userId}, #{operation}, #{operationDetail}, #{ipAddress})
+    </insert>
+</mapper>
