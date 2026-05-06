@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exam.online.mapper.ExamMapper">
+
+    <resultMap id="ExamResultMap" type="com.exam.online.entity.Exam">
+        <id property="examId" column="exam_id"/>
+        <result property="examName" column="exam_name"/>
+        <result property="paperId" column="paper_id"/>
+        <result property="classId" column="class_id"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="status" column="status"/>
+        <result property="allowScreenSwitch" column="allow_screen_switch"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <select id="selectById" resultMap="ExamResultMap">
+        SELECT * FROM exam WHERE exam_id = #{examId}
+    </select>
+
+    <select id="selectAll" resultMap="ExamResultMap">
+        SELECT * FROM exam ORDER BY create_time DESC
+    </select>
+
+    <select id="selectByClassId" resultMap="ExamResultMap">
+        SELECT * FROM exam WHERE class_id = #{classId} ORDER BY start_time DESC
+    </select>
+
+    <select id="selectByPaperId" resultMap="ExamResultMap">
+        SELECT * FROM exam WHERE paper_id = #{paperId} ORDER BY create_time DESC
+    </select>
+
+    <select id="selectByCreateBy" resultMap="ExamResultMap">
+        SELECT * FROM exam WHERE create_by = #{createBy} ORDER BY create_time DESC
+    </select>
+
+    <select id="selectByStatus" resultMap="ExamResultMap">
+        SELECT * FROM exam WHERE status = #{status} ORDER BY start_time DESC
+    </select>
+
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*) FROM exam
+    </select>
+
+    <select id="countByClassId" resultType="int">
+        SELECT COUNT(*) FROM exam WHERE class_id = #{classId}
+    </select>
+
+    <select id="countByStatus" resultType="int">
+        SELECT COUNT(*) FROM exam WHERE status = #{status}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="examId">
+        INSERT INTO exam (exam_name, paper_id, class_id, start_time, end_time, status, allow_screen_switch, create_by)
+        VALUES (#{examName}, #{paperId}, #{classId}, #{startTime}, #{endTime}, #{status}, #{allowScreenSwitch}, #{createBy})
+    </insert>
+
+    <update id="updateById">
+        UPDATE exam SET
+            exam_name = #{examName},
+            paper_id = #{paperId},
+            class_id = #{classId},
+            start_time = #{startTime},
+            end_time = #{endTime},
+            status = #{status},
+            allow_screen_switch = #{allowScreenSwitch}
+        WHERE exam_id = #{examId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM exam WHERE exam_id = #{examId}
+    </delete>
+</mapper>

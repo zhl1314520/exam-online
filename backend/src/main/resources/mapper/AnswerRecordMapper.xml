@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exam.online.mapper.AnswerRecordMapper">
+
+    <resultMap id="AnswerRecordResultMap" type="com.exam.online.entity.AnswerRecord">
+        <id property="answerId" column="answer_id"/>
+        <result property="recordId" column="record_id"/>
+        <result property="questionId" column="question_id"/>
+        <result property="studentAnswer" column="student_answer"/>
+        <result property="isCorrect" column="is_correct"/>
+        <result property="score" column="score"/>
+        <result property="answerTime" column="answer_time"/>
+    </resultMap>
+
+    <select id="selectById" resultMap="AnswerRecordResultMap">
+        SELECT * FROM answer_record WHERE answer_id = #{answerId}
+    </select>
+
+    <select id="selectAll" resultMap="AnswerRecordResultMap">
+        SELECT * FROM answer_record ORDER BY answer_time DESC
+    </select>
+
+    <select id="selectByRecordId" resultMap="AnswerRecordResultMap">
+        SELECT * FROM answer_record WHERE record_id = #{recordId} ORDER BY answer_time
+    </select>
+
+    <select id="selectByQuestionId" resultMap="AnswerRecordResultMap">
+        SELECT * FROM answer_record WHERE question_id = #{questionId} ORDER BY answer_time DESC
+    </select>
+
+    <select id="selectByRecordIdAndQuestionId" resultMap="AnswerRecordResultMap">
+        SELECT * FROM answer_record WHERE record_id = #{recordId} AND question_id = #{questionId}
+    </select>
+
+    <select id="countByRecordId" resultType="int">
+        SELECT COUNT(*) FROM answer_record WHERE record_id = #{recordId}
+    </select>
+
+    <select id="selectTotalScoreByRecordId" resultType="Double">
+        SELECT SUM(score) FROM answer_record WHERE record_id = #{recordId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="answerId">
+        INSERT INTO answer_record (record_id, question_id, student_answer, is_correct, score, answer_time)
+        VALUES (#{recordId}, #{questionId}, #{studentAnswer}, #{isCorrect}, #{score}, #{answerTime})
+    </insert>
+
+    <update id="updateById">
+        UPDATE answer_record SET
+            record_id = #{recordId},
+            question_id = #{questionId},
+            student_answer = #{studentAnswer},
+            is_correct = #{isCorrect},
+            score = #{score},
+            answer_time = #{answerTime}
+        WHERE answer_id = #{answerId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM answer_record WHERE answer_id = #{answerId}
+    </delete>
+
+    <delete id="deleteByRecordId">
+        DELETE FROM answer_record WHERE record_id = #{recordId}
+    </delete>
+</mapper>

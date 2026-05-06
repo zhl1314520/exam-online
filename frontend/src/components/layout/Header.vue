@@ -51,7 +51,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
 import { useAuthStore } from '@/stores/auth'
 
@@ -62,11 +62,14 @@ defineProps({
 defineEmits(['toggle'])
 
 const route = useRoute()
+const router = useRouter()
 const authStore = useAuthStore()
 
 const pageTitle = computed(() => {
   const titles = {
     '/dashboard': '仪表盘',
+    '/profile': '个人信息',
+    '/change-password': '修改密码',
     '/students': '学生管理',
     '/teachers': '教师管理',
     '/classes': '班级管理',
@@ -78,7 +81,11 @@ const pageTitle = computed(() => {
 })
 
 const handleCommand = (command) => {
-  if (command === 'logout') {
+  if (command === 'profile') {
+    router.push('/profile')
+  } else if (command === 'password') {
+    router.push('/change-password')
+  } else if (command === 'logout') {
     authStore.logout()
   }
 }

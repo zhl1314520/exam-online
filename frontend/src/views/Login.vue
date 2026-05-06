@@ -172,9 +172,9 @@ const handleLogin = async () => {
   inset: 0;
   background: linear-gradient(
     135deg,
-    rgba($primary, 0.05) 0%,
+    rgba($accent, 0.05) 0%,
     rgba($accent, 0.08) 50%,
-    rgba($primary-light, 0.03) 100%
+    rgba($accent-light, 0.03) 100%
   );
   z-index: 0;
 }
@@ -215,7 +215,7 @@ const handleLogin = async () => {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, $primary, $accent);
+    background: linear-gradient(90deg, $accent, $accent);
     border-radius: $radius-xl $radius-xl 0 0;
   }
 }
@@ -228,7 +228,7 @@ const handleLogin = async () => {
 
 .logo-icon {
   font-size: 48px;
-  color: $primary;
+  color: $accent;
   margin-bottom: $spacing-md;
 }
 
@@ -273,7 +273,7 @@ const handleLogin = async () => {
     transition: all $ease-smooth 0.2s;
 
     &:hover, &:focus-within {
-      border-color: $primary;
+      border-color: $accent;
       background: $white;
     }
   }
@@ -293,7 +293,7 @@ const handleLogin = async () => {
   width: 100%;
   height: 48px;
   border-radius: $radius-md;
-  background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+  background: linear-gradient(135deg, $accent 0%, $accent-dark 100%);
   border: none;
   font-size: $font-size-md;
   font-weight: 500;
@@ -305,7 +305,7 @@ const handleLogin = async () => {
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba($primary, 0.3);
+    box-shadow: 0 8px 20px rgba($accent, 0.3);
   }
 
   &:active {
@@ -351,7 +351,7 @@ const handleLogin = async () => {
   &.circle-1 {
     width: 200px;
     height: 200px;
-    background: linear-gradient(135deg, rgba($primary, 0.2), rgba($accent, 0.1));
+    background: linear-gradient(135deg, rgba($accent, 0.2), rgba($accent, 0.1));
     top: -50px;
     right: 100px;
   }
@@ -359,7 +359,7 @@ const handleLogin = async () => {
   &.circle-2 {
     width: 120px;
     height: 120px;
-    background: linear-gradient(135deg, rgba($accent, 0.3), rgba($primary-light, 0.15));
+    background: linear-gradient(135deg, rgba($accent, 0.3), rgba($accent-light, 0.15));
     bottom: 100px;
     right: 200px;
   }
@@ -367,7 +367,7 @@ const handleLogin = async () => {
   &.circle-3 {
     width: 80px;
     height: 80px;
-    background: rgba($primary, 0.25);
+    background: rgba($accent, 0.25);
     top: 150px;
     right: 50px;
   }
@@ -392,7 +392,7 @@ const handleLogin = async () => {
 
 .stat-icon {
   font-size: 28px;
-  color: $primary;
+  color: $accent;
 }
 
 .stat-value {

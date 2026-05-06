@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exam.online.mapper.WrongQuestionMapper">
+
+    <resultMap id="WrongQuestionResultMap" type="com.exam.online.entity.WrongQuestion">
+        <id property="wrongId" column="wrong_id"/>
+        <result property="studentId" column="student_id"/>
+        <result property="questionId" column="question_id"/>
+        <result property="studentAnswer" column="student_answer"/>
+        <result property="correctAnswer" column="correct_answer"/>
+        <result property="wrongCount" column="wrong_count"/>
+        <result property="lastWrongTime" column="last_wrong_time"/>
+        <result property="subjectId" column="subject_id"/>
+    </resultMap>
+
+    <select id="selectById" resultMap="WrongQuestionResultMap">
+        SELECT * FROM wrong_question WHERE wrong_id = #{wrongId}
+    </select>
+
+    <select id="selectAll" resultMap="WrongQuestionResultMap">
+        SELECT * FROM wrong_question ORDER BY last_wrong_time DESC
+    </select>
+
+    <select id="selectByStudentId" resultMap="WrongQuestionResultMap">
+        SELECT * FROM wrong_question WHERE student_id = #{studentId} ORDER BY wrong_count DESC, last_wrong_time DESC
+    </select>
+
+    <select id="selectByQuestionId" resultMap="WrongQuestionResultMap">
+        SELECT * FROM wrong_question WHERE question_id = #{questionId} ORDER BY last_wrong_time DESC
+    </select>
+
+    <select id="selectBySubjectId" resultMap="WrongQuestionResultMap">
+        SELECT * FROM wrong_question WHERE subject_id = #{subjectId} ORDER BY wrong_count DESC
+    </select>
+
+    <select id="selectByStudentIdAndQuestionId" resultMap="WrongQuestionResultMap">
+        SELECT * FROM wrong_question WHERE student_id = #{studentId} AND question_id = #{questionId}
+    </select>
+
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*) FROM wrong_question
+    </select>
+
+    <select id="countByStudentId" resultType="int">
+        SELECT COUNT(*) FROM wrong_question WHERE student_id = #{studentId}
+    </select>
+
+    <select id="countBySubjectId" resultType="int">
+        SELECT COUNT(*) FROM wrong_question WHERE subject_id = #{subjectId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="wrongId">
+        INSERT INTO wrong_question (student_id, question_id, student_answer, correct_answer, wrong_count, last_wrong_time, subject_id)
+        VALUES (#{studentId}, #{questionId}, #{studentAnswer}, #{correctAnswer}, #{wrongCount}, #{lastWrongTime}, #{subjectId})
+    </insert>
+
+    <update id="updateById">
+        UPDATE wrong_question SET
+            student_id = #{studentId},
+            question_id = #{questionId},
+            student_answer = #{studentAnswer},
+            correct_answer = #{correctAnswer},
+            wrong_count = #{wrongCount},
+            last_wrong_time = #{lastWrongTime},
+            subject_id = #{subjectId}
+        WHERE wrong_id = #{wrongId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM wrong_question WHERE wrong_id = #{wrongId}
+    </delete>
+
+    <delete id="deleteByStudentIdAndQuestionId">
+        DELETE FROM wrong_question WHERE student_id = #{studentId} AND question_id = #{questionId}
+    </delete>
+</mapper>

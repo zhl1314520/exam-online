@@ -21,6 +21,18 @@ const routes = [
         meta: { title: '仪表盘' }
       },
       {
+        path: 'profile',
+        name: 'Profile',
+        component: () => import('@/views/Profile.vue'),
+        meta: { title: '个人信息' }
+      },
+      {
+        path: 'change-password',
+        name: 'ChangePassword',
+        component: () => import('@/views/ChangePassword.vue'),
+        meta: { title: '修改密码' }
+      },
+      {
         path: 'students',
         name: 'Students',
         component: () => import('@/views/students/StudentList.vue'),

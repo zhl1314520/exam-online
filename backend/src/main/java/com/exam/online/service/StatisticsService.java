@@ -4,6 +4,10 @@ import com.exam.online.mapper.AdminMapper;
 import com.exam.online.mapper.StudentMapper;
 import com.exam.online.mapper.TeacherMapper;
 import com.exam.online.mapper.SystemLogMapper;
+import com.exam.online.mapper.ExamMapper;
+import com.exam.online.mapper.ExamRecordMapper;
+import com.exam.online.mapper.ClassMapper;
+import com.exam.online.mapper.DepartmentMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,21 +29,46 @@ public class StatisticsService {
     @Autowired
     private SystemLogMapper systemLogMapper;
 
+    @Autowired
+    private ExamMapper examMapper;
+
+    @Autowired
+    private ExamRecordMapper examRecordMapper;
+
+    @Autowired
+    private ClassMapper classMapper;
+
+    @Autowired
+    private DepartmentMapper departmentMapper;
+
     public Map<String, Object> getOverview() {
         Map<String, Object> result = new HashMap<>();
-        result.put("adminCount", adminMapper.selectAll().size());
-        result.put("studentCount", studentMapper.countAll());
-        result.put("teacherCount", teacherMapper.countAll());
-        result.put("logCount", systemLogMapper.countAll());
+
+        int adminCount = adminMapper.selectAll().size();
+        int studentCount = studentMapper.countAll();
+        int teacherCount = teacherMapper.countAll();
+
+        result.put("totalUsers", adminCount + studentCount + teacherCount);
+        result.put("studentCount", studentCount);
+        result.put("teacherCount", teacherCount);
+        result.put("examCount", examMapper.countAll());
+        result.put("participantCount", examRecordMapper.countAll());
+        result.put("departmentCount", departmentMapper.selectAll().size());
+        result.put("classCount", classMapper.selectAll().size());
+
         return result;
     }
 
     public Map<String, Object> getUserStatistics() {
         Map<String, Object> result = new HashMap<>();
-        result.put("totalUsers", adminMapper.selectAll().size() + studentMapper.countAll() + teacherMapper.countAll());
-        result.put("adminCount", adminMapper.selectAll().size());
-        result.put("studentCount", studentMapper.countAll());
-        result.put("teacherCount", teacherMapper.countAll());
+        int adminCount = adminMapper.selectAll().size();
+        int studentCount = studentMapper.countAll();
+        int teacherCount = teacherMapper.countAll();
+
+        result.put("totalUsers", adminCount + studentCount + teacherCount);
+        result.put("adminCount", adminCount);
+        result.put("studentCount", studentCount);
+        result.put("teacherCount", teacherCount);
         return result;
     }
 }
