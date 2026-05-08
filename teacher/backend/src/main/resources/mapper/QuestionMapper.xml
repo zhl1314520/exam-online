@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exam.online.mapper.QuestionMapper">
+
+    <resultMap id="QuestionResultMap" type="com.exam.online.entity.Question">
+        <id property="questionId" column="question_id"/>
+        <result property="subjectId" column="subject_id"/>
+        <result property="questionType" column="question_type"/>
+        <result property="questionContent" column="question_content"/>
+        <result property="options" column="options"/>
+        <result property="correctAnswer" column="correct_answer"/>
+        <result property="score" column="score"/>
+        <result property="difficulty" column="difficulty"/>
+        <result property="knowledgePoint" column="knowledge_point"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="subjectName" column="subject_name"/>
+        <result property="teacherName" column="teacher_name"/>
+    </resultMap>
+
+    <select id="selectById" resultMap="QuestionResultMap">
+        SELECT q.*, s.subject_name, t.real_name as teacher_name
+        FROM question q
+        LEFT JOIN subject s ON q.subject_id = s.subject_id
+        LEFT JOIN teacher t ON q.create_by = t.teacher_id
+        WHERE q.question_id = #{questionId}
+    </select>
+
+    <select id="selectAll" resultMap="QuestionResultMap">
+        SELECT q.*, s.subject_name, t.real_name as teacher_name
+        FROM question q
+        LEFT JOIN subject s ON q.subject_id = s.subject_id
+        LEFT JOIN teacher t ON q.create_by = t.teacher_id
+        ORDER BY q.create_time DESC
+    </select>
+
+    <select id="selectBySubjectId" resultMap="QuestionResultMap">
+        SELECT q.*, s.subject_name, t.real_name as teacher_name
+        FROM question q
+        LEFT JOIN subject s ON q.subject_id = s.subject_id
+        LEFT JOIN teacher t ON q.create_by = t.teacher_id
+        WHERE q.subject_id = #{subjectId}
+        ORDER BY q.create_time DESC
+    </select>
+
+    <select id="selectByCreateBy" resultMap="QuestionResultMap">
+        SELECT q.*, s.subject_name, t.real_name as teacher_name
+        FROM question q
+        LEFT JOIN subject s ON q.subject_id = s.subject_id
+        LEFT JOIN teacher t ON q.create_by = t.teacher_id
+        WHERE q.create_by = #{createBy}
+        ORDER BY q.create_time DESC
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="questionId">
+        INSERT INTO question (subject_id, question_type, question_content, options, correct_answer, score, difficulty, knowledge_point, create_by)
+        VALUES (#{subjectId}, #{questionType}, #{questionContent}, #{options}, #{correctAnswer}, #{score}, #{difficulty}, #{knowledgePoint}, #{createBy})
+    </insert>
+
+    <update id="updateById">
+        UPDATE question SET
+            subject_id = #{subjectId},
+            question_type = #{questionType},
+            question_content = #{questionContent},
+            options = #{options},
+            correct_answer = #{correctAnswer},
+            score = #{score},
+            difficulty = #{difficulty},
+            knowledge_point = #{knowledgePoint}
+        WHERE question_id = #{questionId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM question WHERE question_id = #{questionId}
+    </delete>
+
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*) FROM question
+    </select>
+
+    <select id="countBySubjectId" resultType="int">
+        SELECT COUNT(*) FROM question WHERE subject_id = #{subjectId}
+    </select>
+</mapper>

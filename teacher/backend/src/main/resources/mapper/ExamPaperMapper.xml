@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exam.online.mapper.ExamPaperMapper">
+
+    <resultMap id="ExamPaperResultMap" type="com.exam.online.entity.ExamPaper">
+        <id property="paperId" column="paper_id"/>
+        <result property="paperName" column="paper_name"/>
+        <result property="subjectId" column="subject_id"/>
+        <result property="totalScore" column="total_score"/>
+        <result property="passScore" column="pass_score"/>
+        <result property="duration" column="duration"/>
+        <result property="questionCount" column="question_count"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="status" column="status"/>
+        <result property="subjectName" column="subject_name"/>
+        <result property="teacherName" column="teacher_name"/>
+    </resultMap>
+
+    <select id="selectById" resultMap="ExamPaperResultMap">
+        SELECT p.*, s.subject_name, t.real_name as teacher_name
+        FROM exam_paper p
+        LEFT JOIN subject s ON p.subject_id = s.subject_id
+        LEFT JOIN teacher t ON p.create_by = t.teacher_id
+        WHERE p.paper_id = #{paperId}
+    </select>
+
+    <select id="selectAll" resultMap="ExamPaperResultMap">
+        SELECT p.*, s.subject_name, t.real_name as teacher_name
+        FROM exam_paper p
+        LEFT JOIN subject s ON p.subject_id = s.subject_id
+        LEFT JOIN teacher t ON p.create_by = t.teacher_id
+        ORDER BY p.create_time DESC
+    </select>
+
+    <select id="selectByCreateBy" resultMap="ExamPaperResultMap">
+        SELECT p.*, s.subject_name, t.real_name as teacher_name
+        FROM exam_paper p
+        LEFT JOIN subject s ON p.subject_id = s.subject_id
+        LEFT JOIN teacher t ON p.create_by = t.teacher_id
+        WHERE p.create_by = #{createBy}
+        ORDER BY p.create_time DESC
+    </select>
+
+    <select id="selectBySubjectId" resultMap="ExamPaperResultMap">
+        SELECT p.*, s.subject_name, t.real_name as teacher_name
+        FROM exam_paper p
+        LEFT JOIN subject s ON p.subject_id = s.subject_id
+        LEFT JOIN teacher t ON p.create_by = t.teacher_id
+        WHERE p.subject_id = #{subjectId}
+        ORDER BY p.create_time DESC
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="paperId">
+        INSERT INTO exam_paper (paper_name, subject_id, total_score, pass_score, duration, question_count, create_by, status)
+        VALUES (#{paperName}, #{subjectId}, #{totalScore}, #{passScore}, #{duration}, #{questionCount}, #{createBy}, #{status})
+    </insert>
+
+    <update id="updateById">
+        UPDATE exam_paper SET
+            paper_name = #{paperName},
+            subject_id = #{subjectId},
+            total_score = #{totalScore},
+            pass_score = #{passScore},
+            duration = #{duration},
+            question_count = #{questionCount},
+            status = #{status}
+        WHERE paper_id = #{paperId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM exam_paper WHERE paper_id = #{paperId}
+    </delete>
+
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*) FROM exam_paper
+    </select>
+</mapper>

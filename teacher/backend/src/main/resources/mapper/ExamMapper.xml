@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exam.online.mapper.ExamMapper">
+
+    <resultMap id="ExamResultMap" type="com.exam.online.entity.Exam">
+        <id property="examId" column="exam_id"/>
+        <result property="examName" column="exam_name"/>
+        <result property="paperId" column="paper_id"/>
+        <result property="classId" column="class_id"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="status" column="status"/>
+        <result property="allowScreenSwitch" column="allow_screen_switch"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="paperName" column="paper_name"/>
+        <result property="className" column="class_name"/>
+        <result property="studentCount" column="student_count"/>
+        <result property="submittedCount" column="submitted_count"/>
+    </resultMap>
+
+    <select id="selectById" resultMap="ExamResultMap">
+        SELECT e.*, p.paper_name, c.class_name,
+               (SELECT COUNT(*) FROM student WHERE class_id = e.class_id) as student_count,
+               (SELECT COUNT(*) FROM exam_record WHERE exam_id = e.exam_id AND status = 2) as submitted_count
+        FROM exam e
+        LEFT JOIN exam_paper p ON e.paper_id = p.paper_id
+        LEFT JOIN class c ON e.class_id = c.class_id
+        WHERE e.exam_id = #{examId}
+    </select>
+
+    <select id="selectAll" resultMap="ExamResultMap">
+        SELECT e.*, p.paper_name, c.class_name,
+               (SELECT COUNT(*) FROM student WHERE class_id = e.class_id) as student_count,
+               (SELECT COUNT(*) FROM exam_record WHERE exam_id = e.exam_id AND status = 2) as submitted_count
+        FROM exam e
+        LEFT JOIN exam_paper p ON e.paper_id = p.paper_id
+        LEFT JOIN class c ON e.class_id = c.class_id
+        ORDER BY e.create_time DESC
+    </select>
+
+    <select id="selectByCreateBy" resultMap="ExamResultMap">
+        SELECT e.*, p.paper_name, c.class_name,
+               (SELECT COUNT(*) FROM student WHERE class_id = e.class_id) as student_count,
+               (SELECT COUNT(*) FROM exam_record WHERE exam_id = e.exam_id AND status = 2) as submitted_count
+        FROM exam e
+        LEFT JOIN exam_paper p ON e.paper_id = p.paper_id
+        LEFT JOIN class c ON e.class_id = c.class_id
+        WHERE e.create_by = #{createBy}
+        ORDER BY e.create_time DESC
+    </select>
+
+    <select id="selectByClassId" resultMap="ExamResultMap">
+        SELECT e.*, p.paper_name, c.class_name,
+               (SELECT COUNT(*) FROM student WHERE class_id = e.class_id) as student_count,
+               (SELECT COUNT(*) FROM exam_record WHERE exam_id = e.exam_id AND status = 2) as submitted_count
+        FROM exam e
+        LEFT JOIN exam_paper p ON e.paper_id = p.paper_id
+        LEFT JOIN class c ON e.class_id = c.class_id
+        WHERE e.class_id = #{classId}
+        ORDER BY e.create_time DESC
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="examId">
+        INSERT INTO exam (exam_name, paper_id, class_id, start_time, end_time, status, allow_screen_switch, create_by)
+        VALUES (#{examName}, #{paperId}, #{classId}, #{startTime}, #{endTime}, #{status}, #{allowScreenSwitch}, #{createBy})
+    </insert>
+
+    <update id="updateById">
+        UPDATE exam SET
+            exam_name = #{examName},
+            paper_id = #{paperId},
+            class_id = #{classId},
+            start_time = #{startTime},
+            end_time = #{endTime},
+            status = #{status},
+            allow_screen_switch = #{allowScreenSwitch}
+        WHERE exam_id = #{examId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM exam WHERE exam_id = #{examId}
+    </delete>
+
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*) FROM exam
+    </select>
+
+    <select id="countByStatus" resultType="int">
+        SELECT COUNT(*) FROM exam WHERE status = #{status}
+    </select>
+</mapper>

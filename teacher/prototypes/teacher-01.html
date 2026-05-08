@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教师端 - 题库管理</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg-primary: #0A0A0B;
+            --bg-secondary: #141416;
+            --bg-tertiary: #1C1C1F;
+            --bg-card: #18181B;
+            --text-primary: #FAFAFA;
+            --text-secondary: #A1A1AA;
+            --text-muted: #71717A;
+            --accent-amber: #F59E0B;
+            --accent-coral: #FF6B6B;
+            --accent-mint: #10B981;
+            --accent-sky: #0EA5E9;
+            --border: #27272A;
+        }
+        
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .glow-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.12;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .glow-orb-1 {
+            width: 500px;
+            height: 500px;
+            background: var(--accent-mint);
+            top: -150px;
+            left: 20%;
+        }
+        
+        .glow-orb-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--accent-amber);
+            bottom: -100px;
+            right: 15%;
+        }
+        
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            border-right: 1px solid var(--border);
+            padding: 32px 20px;
+            position: fixed;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 12px;
+            margin-bottom: 48px;
+        }
+        
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--accent-mint) 0%, #059669 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--bg-primary);
+        }
+        
+        .logo-text {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+        
+        .logo-text span {
+            color: var(--accent-mint);
+        }
+        
+        .nav-section {
+            margin-bottom: 32px;
+        }
+        
+        .nav-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 0 12px;
+            margin-bottom: 12px;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            border-radius: 10px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--accent-mint);
+            transform: scaleY(0);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .nav-item:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.15) 0%, transparent 100%);
+            color: var(--text-primary);
+        }
+        
+        .nav-item.active::before {
+            transform: scaleY(1);
+        }
+        
+        .nav-item .iconify {
+            font-size: 20px;
+        }
+        
+        .nav-item-text {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .nav-badge {
+            margin-left: auto;
+            background: var(--accent-mint);
+            color: var(--bg-primary);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+        
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 20px;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid var(--accent-mint);
+        }
+        
+        .user-details {
+            flex: 1;
+        }
+        
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .user-role {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 32px 40px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 32px;
+        }
+        
+        .header-left h1 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 8px;
+        }
+        
+        .header-left p {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+        
+        .header-right {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            font-family: inherit;
+        }
+        
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--bg-card);
+            border-color: var(--text-muted);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-mint) 0%, #059669 100%);
+            color: var(--bg-primary);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+        }
+        
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+        
+        .stat-icon.total { background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); }
+        .stat-icon.single { background: rgba(16, 185, 129, 0.15); color: var(--accent-mint); }
+        .stat-icon.multiple { background: rgba(14, 165, 233, 0.15); color: var(--accent-sky); }
+        .stat-icon.coding { background: rgba(255, 107, 107, 0.15); color: var(--accent-coral); }
+        
+        .stat-content h3 {
+            font-size: 24px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .stat-content p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        
+        .content-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 24px;
+        }
+        
+        .category-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        
+        .panel-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .panel-title {
+            font-size: 15px;
+            font-weight: 600;
+        }
+        
+        .panel-action {
+            color: var(--accent-mint);
+            cursor: pointer;
+            font-size: 13px;
+        }
+        
+        .category-list {
+            padding: 12px;
+        }
+        
+        .category-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 4px;
+        }
+        
+        .category-item:hover {
+            background: var(--bg-tertiary);
+        }
+        
+        .category-item.active {
+            background: rgba(16, 185, 129, 0.15);
+        }
+        
+        .category-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            background: var(--bg-tertiary);
+        }
+        
+        .category-item.active .category-icon {
+            background: var(--accent-mint);
+            color: var(--bg-primary);
+        }
+        
+        .category-info {
+            flex: 1;
+        }
+        
+        .category-name {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+        
+        .category-count {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .question-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .search-box {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 14px 20px 14px 48px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 14px;
+            color: var(--text-primary);
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+        
+        .search-box input::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--accent-mint);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+        
+        .search-box .iconify {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 18px;
+        }
+        
+        .filter-group {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .filter-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        
+        .filter-btn:hover {
+            border-color: var(--text-muted);
+            color: var(--text-primary);
+        }
+        
+        .question-list {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        
+        .question-item {
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+        
+        .question-item:last-child {
+            border-bottom: none;
+        }
+        
+        .question-item:hover {
+            background: var(--bg-tertiary);
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        
+        .question-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .question-type {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .question-type.single { background: rgba(16, 185, 129, 0.15); color: var(--accent-mint); }
+        .question-type.multiple { background: rgba(14, 165, 233, 0.15); color: var(--accent-sky); }
+        .question-type.judge { background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); }
+        .question-type.fill { background: rgba(168, 85, 247, 0.15); color: #A855F7; }
+        .question-type.code { background: rgba(255, 107, 107, 0.15); color: var(--accent-coral); }
+        
+        .question-difficulty {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .difficulty-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--border);
+        }
+        
+        .difficulty-dot.active { background: var(--accent-amber); }
+        
+        .question-points {
+            font-size: 13px;
+            color: var(--text-muted);
+            background: var(--bg-tertiary);
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+        
+        .question-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .action-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border-color: var(--text-muted);
+        }
+        
+        .action-btn.danger:hover {
+            background: rgba(255, 107, 107, 0.15);
+            color: var(--accent-coral);
+            border-color: var(--accent-coral);
+        }
+        
+        .question-content {
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+        
+        .question-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .option-label {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            background: var(--bg-card);
+            color: var(--text-muted);
+        }
+        
+        .option-item.correct .option-label {
+            background: var(--accent-mint);
+            color: var(--bg-primary);
+        }
+        
+        .option-item.correct {
+            color: var(--text-primary);
+        }
+        
+        .question-tags {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        
+        .tag {
+            padding: 4px 10px;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .pagination-info {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .pagination-controls {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .page-btn {
+            min-width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        
+        .page-btn:hover {
+            border-color: var(--text-muted);
+            color: var(--text-primary);
+        }
+        
+        .page-btn.active {
+            background: var(--accent-mint);
+            border-color: var(--accent-mint);
+            color: var(--bg-primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+    
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">EXAM</div>
+                <div class="logo-text">在线考试</div>
+            </div>
+            
+            <nav class="nav-section">
+                <div class="nav-label">题库</div>
+                <div class="nav-item active">
+                    <span class="iconify" data-icon="solar:notebook-bold-duotone"></span>
+                    <span class="nav-item-text">题库管理</span>
+                    <span class="nav-badge">3.2k</span>
+                </div>
+            </nav>
+            
+            <nav class="nav-section">
+                <div class="nav-label">试卷</div>
+                <div class="nav-item">
+                    <span class="iconify" data-icon="solar:document-add-bold-duotone"></span>
+                    <span class="nav-item-text">组卷管理</span>
+                </div>
+            </nav>
+            
+            <nav class="nav-section">
+                <div class="nav-label">考试</div>
+                <div class="nav-item">
+                    <span class="iconify" data-icon="solar:clipboard-check-bold-duotone"></span>
+                    <span class="nav-item-text">考试管理</span>
+                </div>
+                <div class="nav-item">
+                    <span class="iconify" data-icon="solar:chart-2-bold-duotone"></span>
+                    <span class="nav-item-text">成绩分析</span>
+                </div>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <img src="https://picsum.photos/seed/teacher1/80/80" alt="Teacher" class="user-avatar">
+                    <div class="user-details">
+                        <div class="user-name">kittychen</div>
+                        <div class="user-role">计算机科学与技术</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <main class="main-content">
+            <header class="header">
+                <div class="header-left">
+                    <h1>题库管理</h1>
+                    <p>管理课程题目，支持多种题型与批量导入</p>
+                </div>
+                <div class="header-right">
+                    <button class="btn btn-secondary">
+                        <span class="iconify" data-icon="solar:upload-bold"></span>
+                        批量导入
+                    </button>
+                    <button class="btn btn-primary">
+                        <span class="iconify" data-icon="solar:add-circle-bold"></span>
+                        新建题目
+                    </button>
+                </div>
+            </header>
+            
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-icon total">
+                        <span class="iconify" data-icon="solar:database-bold"></span>
+                    </div>
+                    <div class="stat-content">
+                        <h3>3,247</h3>
+                        <p>题目总数</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon single">
+                        <span class="iconify" data-icon="solar:check-circle-bold"></span>
+                    </div>
+                    <div class="stat-content">
+                        <h3>1,856</h3>
+                        <p>单选题</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon multiple">
+                        <span class="iconify" data-icon="solar:check-square-bold"></span>
+                    </div>
+                    <div class="stat-content">
+                        <h3>892</h3>
+                        <p>多选题</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon coding">
+                        <span class="iconify" data-icon="solar:code-bold"></span>
+                    </div>
+                    <div class="stat-content">
+                        <h3>156</h3>
+                        <p>编程题</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content-layout">
+                <div class="category-panel">
+                    <div class="panel-header">
+                        <span class="panel-title">科目分类</span>
+                        <span class="panel-action">+ 新建</span>
+                    </div>
+                    <div class="category-list">
+                        <div class="category-item active">
+                            <div class="category-icon">
+                                <span class="iconify" data-icon="solar:code-bold"></span>
+                            </div>
+                            <div class="category-info">
+                                <div class="category-name">数据结构</div>
+                                <div class="category-count">856 道题目</div>
+                            </div>
+                        </div>
+                        <div class="category-item">
+                            <div class="category-icon">
+                                <span class="iconify" data-icon="solar:cpu-bolt-bold"></span>
+                            </div>
+                            <div class="category-info">
+                                <div class="category-name">操作系统</div>
+                                <div class="category-count">642 道题目</div>
+                            </div>
+                        </div>
+                        <div class="category-item">
+                            <div class="category-icon">
+                                <span class="iconify" data-icon="solar:server-bold"></span>
+                            </div>
+                            <div class="category-info">
+                                <div class="category-name">计算机网络</div>
+                                <div class="category-count">528 道题目</div>
+                            </div>
+                        </div>
+                        <div class="category-item">
+                            <div class="category-icon">
+                                <span class="iconify" data-icon="solar:database-bold"></span>
+                            </div>
+                            <div class="category-info">
+                                <div class="category-name">数据库原理</div>
+                                <div class="category-count">489 道题目</div>
+                            </div>
+                        </div>
+                        <div class="category-item">
+                            <div class="category-icon">
+                                <span class="iconify" data-icon="solar:programming-bold"></span>
+                            </div>
+                            <div class="category-info">
+                                <div class="category-name">算法设计</div>
+                                <div class="category-count">732 道题目</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question-panel">
+                    <div class="toolbar">
+                        <div class="search-box">
+                            <span class="iconify" data-icon="solar:magnifer-linear"></span>
+                            <input type="text" placeholder="搜索题目内容、知识点...">
+                        </div>
+                        <div class="filter-group">
+                            <button class="filter-btn">
+                                <span class="iconify" data-icon="solar:filter-linear"></span>
+                                题型筛选
+                            </button>
+                            <button class="filter-btn">
+                                <span class="iconify" data-icon="solar:sort-vertical-linear"></span>
+                                难度排序
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="question-list">
+                        <div class="question-item">
+                            <div class="question-header">
+                                <div class="question-meta">
+                                    <span class="question-type single">单选题</span>
+                                    <div class="question-difficulty">
+                                        <span class="difficulty-dot active"></span>
+                                        <span class="difficulty-dot active"></span>
+                                        <span class="difficulty-dot"></span>
+                                    </div>
+                                    <span class="question-points">5分</span>
+                                </div>
+                                <div class="question-actions">
+                                    <button class="action-btn">
+                                        <span class="iconify" data-icon="solar:pen-2-linear"></span>
+                                    </button>
+                                    <button class="action-btn danger">
+                                        <span class="iconify" data-icon="solar:trash-bin-minimalistic-linear"></span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="question-content">
+                                在一个单链表中，已知 q 所指结点是 p 所指结点的直接前驱，若在 p、q 之间插入 s 结点，则执行操作？
+                            </div>
+                            <div class="question-options">
+                                <div class="option-item">
+                                    <span class="option-label">A</span>
+                                    s->next = p->next; p->next = s;
+                                </div>
+                                <div class="option-item correct">
+                                    <span class="option-label">B</span>
+                                    q->next = s; s->next = p;
+                                </div>
+                                <div class="option-item">
+                                    <span class="option-label">C</span>
+                                    p->next = s; s->next = q;
+                                </div>
+                                <div class="option-item">
+                                    <span class="option-label">D</span>
+                                    p->next = s; s->next = p;
+                                </div>
+                            </div>
+                            <div class="question-tags">
+                                <span class="tag">链表</span>
+                                <span class="tag">插入操作</span>
+                                <span class="tag">基础</span>
+                            </div>
+                        </div>
+                        
+                        <div class="question-item">
+                            <div class="question-header">
+                                <div class="question-meta">
+                                    <span class="question-type multiple">多选题</span>
+                                    <div class="question-difficulty">
+                                        <span class="difficulty-dot active"></span>
+                                        <span class="difficulty-dot active"></span>
+                                        <span class="difficulty-dot active"></span>
+                                    </div>
+                                    <span class="question-points">10分</span>
+                                </div>
+                                <div class="question-actions">
+                                    <button class="action-btn">
+                                        <span class="iconify" data-icon="solar:pen-2-linear"></span>
+                                    </button>
+                                    <button class="action-btn danger">
+                                        <span class="iconify" data-icon="solar:trash-bin-minimalistic-linear"></span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="question-content">
+                                以下关于二叉树遍历的说法，哪些是正确的？
+                            </div>
+                            <div class="question-options">
+                                <div class="option-item correct">
+                                    <span class="option-label">A</span>
+                                    前序遍历先访问根节点
+                                </div>
+                                <div class="option-item correct">
+                                    <span class="option-label">B</span>
+                                    中序遍历可用于二叉搜索树排序
+                                </div>
+                                <div class="option-item">
+                                    <span class="option-label">C</span>
+                                    后序遍历最先访问根节点
+                                </div>
+                                <div class="option-item correct">
+                                    <span class="option-label">D</span>
+                                    层序遍历需要借助队列实现
+                                </div>
+                            </div>
+                            <div class="question-tags">
+                                <span class="tag">二叉树</span>
+                                <span class="tag">遍历算法</span>
+                                <span class="tag">进阶</span>
+                            </div>
+                        </div>
+                        
+                        <div class="question-item">
+                            <div class="question-header">
+                                <div class="question-meta">
+                                    <span class="question-type code">编程题</span>
+                                    <div class="question-difficulty">
+                                        <span class="difficulty-dot active"></span>
+                                        <span class="difficulty-dot active"></span>
+                                        <span class="difficulty-dot active"></span>
+                                    </div>
+                                    <span class="question-points">20分</span>
+                                </div>
+                                <div class="question-actions">
+                                    <button class="action-btn">
+                                        <span class="iconify" data-icon="solar:pen-2-linear"></span>
+                                    </button>
+                                    <button class="action-btn danger">
+                                        <span class="iconify" data-icon="solar:trash-bin-minimalistic-linear"></span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="question-content">
+                                实现一个函数，将给定的二叉树翻转，并返回翻转后的根节点。要求时间复杂度为 O(n)，空间复杂度为 O(1)。
+                            </div>
+                            <div class="question-tags">
+                                <span class="tag">二叉树</span>
+                                <span class="tag">递归</span>
+                                <span class="tag">困难</span>
+                            </div>
+                        </div>
+                        
+                        <div class="pagination">
+                            <div class="pagination-info">显示 1-3 条，共 856 条记录</div>
+                            <div class="pagination-controls">
+                                <button class="page-btn">
+                                    <span class="iconify" data-icon="solar:alt-arrow-left-linear"></span>
+                                </button>
+                                <button class="page-btn active">1</button>
+                                <button class="page-btn">2</button>
+                                <button class="page-btn">3</button>
+                                <button class="page-btn">...</button>
+                                <button class="page-btn">286</button>
+                                <button class="page-btn">
+                                    <span class="iconify" data-icon="solar:alt-arrow-right-linear"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
