@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exam.student.mapper.QuestionMapper">
+
+    <resultMap id="QuestionResultMap" type="com.exam.student.entity.Question">
+        <id property="questionId" column="question_id"/>
+        <result property="subjectId" column="subject_id"/>
+        <result property="questionType" column="question_type"/>
+        <result property="questionContent" column="question_content"/>
+        <result property="options" column="options"/>
+        <result property="correctAnswer" column="correct_answer"/>
+        <result property="score" column="score"/>
+        <result property="difficulty" column="difficulty"/>
+        <result property="knowledgePoint" column="knowledge_point"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <resultMap id="QuestionWithOrderResultMap" type="com.exam.student.entity.Question" extends="QuestionResultMap">
+        <result property="questionOrder" column="question_order"/>
+        <result property="studentAnswer" column="student_answer"/>
+    </resultMap>
+
+    <select id="selectById" resultMap="QuestionResultMap">
+        SELECT * FROM question WHERE question_id = #{questionId}
+    </select>
+
+    <select id="selectByPaperId" resultMap="QuestionWithOrderResultMap">
+        SELECT
+            q.*,
+            pq.question_order,
+            pq.score as paper_score
+        FROM paper_question pq
+        JOIN question q ON pq.question_id = q.question_id
+        WHERE pq.paper_id = #{paperId}
+        ORDER BY pq.question_order ASC
+    </select>
+
+    <select id="selectByPaperIdWithAnswers" resultMap="QuestionWithOrderResultMap">
+        SELECT
+            q.*,
+            pq.question_order,
+            pq.score as paper_score,
+            ar.student_answer
+        FROM paper_question pq
+        JOIN question q ON pq.question_id = q.question_id
+        LEFT JOIN answer_record ar ON ar.question_id = q.question_id AND ar.record_id = #{recordId}
+        WHERE pq.paper_id = #{paperId}
+        ORDER BY pq.question_order ASC
+    </select>
+</mapper>

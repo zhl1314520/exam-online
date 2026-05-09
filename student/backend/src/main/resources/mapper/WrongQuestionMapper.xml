@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exam.student.mapper.WrongQuestionMapper">
+
+    <resultMap id="WrongQuestionResultMap" type="com.exam.student.entity.WrongQuestion">
+        <id property="wrongId" column="wrong_id"/>
+        <result property="studentId" column="student_id"/>
+        <result property="questionId" column="question_id"/>
+        <result property="studentAnswer" column="student_answer"/>
+        <result property="correctAnswer" column="correct_answer"/>
+        <result property="wrongCount" column="wrong_count"/>
+        <result property="lastWrongTime" column="last_wrong_time"/>
+        <result property="subjectId" column="subject_id"/>
+    </resultMap>
+
+    <resultMap id="WrongQuestionWithDetailResultMap" type="com.exam.student.entity.WrongQuestion" extends="WrongQuestionResultMap">
+        <result property="questionContent" column="question_content"/>
+        <result property="questionType" column="question_type"/>
+        <result property="options" column="options"/>
+        <result property="knowledgePoint" column="knowledge_point"/>
+        <result property="subjectName" column="subject_name"/>
+    </resultMap>
+
+    <select id="selectByStudentId" resultMap="WrongQuestionWithDetailResultMap">
+        SELECT
+            wq.*,
+            q.question_content,
+            q.question_type,
+            q.options,
+            q.knowledge_point,
+            s.subject_name
+        FROM wrong_question wq
+        LEFT JOIN question q ON wq.question_id = q.question_id
+        LEFT JOIN subject s ON wq.subject_id = s.subject_id
+        WHERE wq.student_id = #{studentId}
+        ORDER BY wq.last_wrong_time DESC
+    </select>
+
+    <select id="selectByStudentIdAndSubject" resultMap="WrongQuestionWithDetailResultMap">
+        SELECT
+            wq.*,
+            q.question_content,
+            q.question_type,
+            q.options,
+            q.knowledge_point,
+            s.subject_name
+        FROM wrong_question wq
+        LEFT JOIN question q ON wq.question_id = q.question_id
+        LEFT JOIN subject s ON wq.subject_id = s.subject_id
+        WHERE wq.student_id = #{studentId}
+          AND wq.subject_id = #{subjectId}
+        ORDER BY wq.last_wrong_time DESC
+    </select>
+
+    <select id="selectByStudentAndQuestion" resultMap="WrongQuestionResultMap">
+        SELECT * FROM wrong_question
+        WHERE student_id = #{studentId} AND question_id = #{questionId}
+        LIMIT 1
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="wrongId">
+        INSERT INTO wrong_question (student_id, question_id, student_answer, correct_answer, subject_id, wrong_count, last_wrong_time)
+        VALUES (#{studentId}, #{questionId}, #{studentAnswer}, #{correctAnswer}, #{subjectId}, 1, NOW())
+    </insert>
+
+    <update id="updateById">
+        UPDATE wrong_question SET
+            student_answer = #{studentAnswer},
+            correct_answer = #{correctAnswer},
+            subject_id = #{subjectId},
+            wrong_count = #{wrongCount},
+            last_wrong_time = NOW()
+        WHERE wrong_id = #{wrongId}
+    </update>
+
+    <update id="incrementWrongCount">
+        UPDATE wrong_question SET
+            wrong_count = wrong_count + 1,
+            last_wrong_time = NOW()
+        WHERE wrong_id = #{wrongId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM wrong_question WHERE wrong_id = #{wrongId}
+    </delete>
+</mapper>
