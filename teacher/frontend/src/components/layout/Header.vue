@@ -5,43 +5,43 @@
       <p class="page-subtitle">{{ currentRouteSubtitle }}</p>
     </div>
     <div class="header-right">
-      <el-dropdown @command="handleCommand" class="user-dropdown">
-        <span class="user-info">
-          <el-avatar :size="36" :icon="UserFilled" class="user-avatar" />
-          <span class="username">{{ authStore.teacherName }}</span>
-          <el-icon><ArrowDown /></el-icon>
-        </span>
-        <template #dropdown>
-          <el-dropdown-menu>
-            <el-dropdown-item command="profile">
-              <el-icon><User /></el-icon>
-              个人信息
-            </el-dropdown-item>
-            <el-dropdown-item command="password">
-              <el-icon><Lock /></el-icon>
-              修改密码
-            </el-dropdown-item>
-            <el-dropdown-item divided command="logout">
-              <el-icon><SwitchButton /></el-icon>
-              退出登录
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </template>
-      </el-dropdown>
+      <div class="user-dropdown" @click="toggleDropdown" ref="dropdownRef">
+        <div class="user-info">
+          <img :src="userAvatar" alt="Teacher" class="user-avatar" />
+          <span class="username">{{ authStore.teacherName || '教师' }}</span>
+          <Icon icon="solar:alt-arrow-down-linear" class="dropdown-arrow" :class="{ open: dropdownOpen }" />
+        </div>
+        <div v-if="dropdownOpen" class="dropdown-menu">
+          <div class="dropdown-item" @click="navigateTo('/profile')">
+            <Icon icon="solar:user-bold-duotone" class="dropdown-icon" />
+            个人信息
+          </div>
+          <div class="dropdown-item" @click="navigateTo('/change-password')">
+            <Icon icon="solar:lock-password-bold-duotone" class="dropdown-icon" />
+            修改密码
+          </div>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-item danger" @click="handleLogout">
+            <Icon icon="solar:logout-2-bold-duotone" class="dropdown-icon" />
+            退出登录
+          </div>
+        </div>
+      </div>
     </div>
   </header>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { UserFilled, ArrowDown, User, Lock, SwitchButton } from '@element-plus/icons-vue'
+import { Icon } from '@iconify/vue'
 import { useAuthStore } from '@/stores/auth'
 
 const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
+const dropdownOpen = ref(false)
+const dropdownRef = ref(null)
 
 const routeMetaMap = {
   '/dashboard': { title: '仪表盘', subtitle: '查看系统概览和数据统计' },
@@ -58,28 +58,45 @@ const currentRouteMeta = computed(() => {
 const currentRouteTitle = computed(() => currentRouteMeta.value.title)
 const currentRouteSubtitle = computed(() => currentRouteMeta.value.subtitle)
 
-const handleCommand = (command) => {
-  switch (command) {
-    case 'profile':
-      router.push('/profile')
-      break
-    case 'password':
-      router.push('/change-password')
-      break
-    case 'logout':
-      ElMessageBox.confirm('确定要退出登录吗？', '提示', {
-        type: 'warning'
-      }).then(() => {
-        authStore.logout()
-        ElMessage.success('已退出登录')
-      })
-      break
+const userAvatar = computed(() => {
+  return `https://picsum.photos/seed/${authStore.teacherNo || 'teacher1'}/80/80`
+})
+
+const toggleDropdown = () => {
+  dropdownOpen.value = !dropdownOpen.value
+}
+
+const navigateTo = (path) => {
+  dropdownOpen.value = false
+  router.push(path)
+}
+
+const handleLogout = () => {
+  dropdownOpen.value = false
+  if (confirm('确定要退出登录吗？')) {
+    authStore.logout()
+    router.push('/login')
   }
 }
+
+// Close dropdown when clicking outside
+const handleClickOutside = (event) => {
+  if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
+    dropdownOpen.value = false
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@use '@/styles/variables.scss' as *;
 
 .header {
   display: flex;
@@ -87,6 +104,8 @@ const handleCommand = (command) => {
   align-items: flex-start;
   padding: 32px 40px;
   background: transparent;
+  position: relative;
+  z-index: 1;
 }
 
 .header-left {
@@ -111,6 +130,7 @@ const handleCommand = (command) => {
 }
 
 .user-dropdown {
+  position: relative;
   cursor: pointer;
 }
 
@@ -120,15 +140,21 @@ const handleCommand = (command) => {
   gap: 10px;
   padding: 8px 16px;
   border-radius: 10px;
+  background: $bg-tertiary;
+  border: 1px solid $border-base;
   transition: all $transition-fast;
 
   &:hover {
-    background: $bg-tertiary;
+    background: $bg-secondary;
+    border-color: $border-dark;
   }
 
   .user-avatar {
+    width: 36px;
+    height: 36px;
     border-radius: 10px;
-    border: 2px solid $border-dark;
+    object-fit: cover;
+    border: 2px solid $primary-color;
   }
 
   .username {
@@ -136,11 +162,82 @@ const handleCommand = (command) => {
     font-weight: 500;
     color: $text-primary;
   }
+
+  .dropdown-arrow {
+    font-size: 16px;
+    color: $text-muted;
+    transition: transform $transition-fast;
+
+    &.open {
+      transform: rotate(180deg);
+    }
+  }
 }
 
-:deep(.el-dropdown-menu__item) {
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 180px;
+  background: $bg-card;
+  border: 1px solid $border-base;
+  border-radius: 12px;
+  padding: 8px;
+  box-shadow: $shadow-lg;
+  z-index: 100;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: $text-secondary;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover {
+    background: $bg-tertiary;
+    color: $text-primary;
+  }
+
+  &.danger:hover {
+    background: rgba($danger-color, 0.1);
+    color: $danger-color;
+  }
+
+  .dropdown-icon {
+    font-size: 18px;
+    color: $text-muted;
+  }
+
+  &:hover .dropdown-icon {
+    color: $text-primary;
+  }
+
+  &.danger:hover .dropdown-icon {
+    color: $danger-color;
+  }
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: $border-base;
+  margin: 8px 0;
 }
 </style>

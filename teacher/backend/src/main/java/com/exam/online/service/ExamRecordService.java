@@ -29,6 +29,10 @@ public class ExamRecordService {
         return examRecordMapper.selectByExamId(examId);
     }
 
+    public List<ExamRecord> getAll() {
+        return examRecordMapper.selectAll();
+    }
+
     public List<ExamRecord> getByStudentId(Integer studentId) {
         return examRecordMapper.selectByStudentId(studentId);
     }

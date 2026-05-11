@@ -1,68 +1,75 @@
 <template>
   <div class="login-container">
-    <!-- 背景装饰 -->
-    <div class="bg-decoration">
-      <div class="decoration-orb orb-1"></div>
-      <div class="decoration-orb orb-2"></div>
-      <div class="decoration-orb orb-3"></div>
-    </div>
-
     <div class="login-wrapper">
       <div class="login-box">
-        <!-- 登录头部 -->
+        <!-- Login header -->
         <div class="login-header">
           <div class="logo">
-            <div class="logo-icon">E</div>
-            <div class="logo-text">Exam<span>Flow</span></div>
+            <div class="logo-icon">
+              <Icon icon="solar:graduation-cap-bold-duotone" class="logo-icon-svg" />
+            </div>
+            <div class="logo-text">教师端登录</div>
           </div>
           <h1 class="title">欢迎回来</h1>
           <p class="subtitle">登录到在线考试系统教师端</p>
         </div>
 
-        <!-- 登录表单 -->
-        <el-form
-          ref="formRef"
-          :model="loginForm"
-          :rules="loginRules"
-          class="login-form"
-        >
-          <el-form-item prop="teacherNo">
-            <div class="input-wrapper">
-              <el-icon class="input-icon"><User /></el-icon>
-              <el-input
-                v-model="loginForm.teacherNo"
-                placeholder="请输入工号"
-                size="large"
-              />
-            </div>
-          </el-form-item>
-          <el-form-item prop="password">
-            <div class="input-wrapper">
-              <el-icon class="input-icon"><Lock /></el-icon>
-              <el-input
+        <!-- Login form -->
+        <form class="login-form" @submit.prevent="handleLogin">
+          <div class="form-group">
+            <label class="form-label">
+              <Icon icon="solar:user-bold-duotone" class="input-icon" />
+              工号
+            </label>
+            <input
+              v-model="loginForm.teacherNo"
+              type="text"
+              class="input"
+              placeholder="请输入工号"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              <Icon icon="solar:lock-password-bold-duotone" class="input-icon" />
+              密码
+            </label>
+            <div class="password-input-wrapper">
+              <input
                 v-model="loginForm.password"
-                type="password"
+                :type="showPassword ? 'text' : 'password'"
+                class="input"
                 placeholder="请输入密码"
-                size="large"
-                show-password
+                required
                 @keyup.enter="handleLogin"
               />
+              <button
+                type="button"
+                class="password-toggle"
+                @click="showPassword = !showPassword"
+              >
+                <Icon
+                  :icon="showPassword ? 'solar:eye-closed-bold-duotone' : 'solar:eye-bold-duotone'"
+                  class="toggle-icon"
+                />
+              </button>
             </div>
-          </el-form-item>
-          <el-form-item>
-            <el-button
-              type="primary"
-              size="large"
-              class="login-btn"
-              :loading="loading"
-              @click="handleLogin"
-            >
-              登录
-            </el-button>
-          </el-form-item>
-        </el-form>
+          </div>
 
-        <!-- 登录底部 -->
+          <div v-if="errorMsg" class="error-message">
+            <Icon icon="solar:danger-triangle-bold-duotone" class="error-icon" />
+            {{ errorMsg }}
+          </div>
+
+          <button type="submit" class="login-btn" :disabled="loading">
+            <Icon v-if="loading" icon="solar:loader-2-bold-duotone" class="loading-icon" />
+            <Icon v-else icon="solar:login-2-bold-duotone" class="btn-icon" />
+            {{ loading ? '登录中...' : '登录' }}
+          </button>
+        </form>
+
+        <!-- Login footer -->
         <div class="login-footer">
           <p class="copyright">在线考试系统 · 教师端</p>
         </div>
@@ -74,107 +81,92 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
-import { User, Lock } from '@element-plus/icons-vue'
+import { Icon } from '@iconify/vue'
 import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
 const authStore = useAuthStore()
 const loading = ref(false)
-const formRef = ref(null)
+const showPassword = ref(false)
+const errorMsg = ref('')
 
 const loginForm = reactive({
   teacherNo: '',
   password: ''
 })
 
-const loginRules = {
-  teacherNo: [{ required: true, message: '请输入工号', trigger: 'blur' }],
-  password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
-}
-
 const handleLogin = async () => {
-  if (!formRef.value) return
-  await formRef.value.validate(async (valid) => {
-    if (valid) {
-      loading.value = true
-      try {
-        const success = await authStore.login(loginForm.teacherNo, loginForm.password)
-        if (success) {
-          ElMessage.success('登录成功')
-          router.push('/dashboard')
-        } else {
-          ElMessage.error('登录失败，请检查工号和密码')
-        }
-      } finally {
-        loading.value = false
-      }
+  errorMsg.value = ''
+  loading.value = true
+
+  try {
+    const success = await authStore.login(loginForm.teacherNo, loginForm.password)
+    if (success) {
+      router.push('/dashboard')
+    } else {
+      errorMsg.value = '登录失败，请检查工号和密码'
     }
-  })
+  } catch (err) {
+    errorMsg.value = err.message || '登录失败，请稍后重试'
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@use '@/styles/variables.scss' as *;
 
 .login-container {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  background: $bg-primary;
   position: relative;
   overflow: hidden;
 }
 
-/* 背景装饰 */
-.bg-decoration {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.decoration-orb {
-  position: absolute;
+/* Glow orbs - decorative effect */
+.glow-orb {
+  position: fixed;
   border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.4;
+  filter: blur(120px);
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: 0;
 }
 
-.orb-1 {
-  width: 400px;
-  height: 400px;
-  background: linear-gradient(135deg, #3b82f6 0%, #0ea5e9 100%);
-  top: -100px;
-  left: -100px;
+.glow-orb-1 {
+  width: 500px;
+  height: 500px;
+  background: $accent-mint;
+  top: -150px;
+  left: 20%;
   animation: float 20s infinite ease-in-out;
 }
 
-.orb-2 {
-  width: 300px;
-  height: 300px;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  bottom: -50px;
-  right: -50px;
+.glow-orb-2 {
+  width: 400px;
+  height: 400px;
+  background: $accent-amber;
+  bottom: -100px;
+  right: 15%;
   animation: float 25s infinite ease-in-out reverse;
 }
 
-.orb-3 {
-  width: 200px;
-  height: 200px;
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-  top: 50%;
-  right: 20%;
+.glow-orb-3 {
+  width: 300px;
+  height: 300px;
+  background: $accent-coral;
+  top: 40%;
+  left: -100px;
   animation: float 15s infinite ease-in-out;
 }
 
 @keyframes float {
-  0%, 100% {
-    transform: translate(0, 0);
-  }
-  50% {
-    transform: translate(30px, -30px);
-  }
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(30px, -30px); }
 }
 
 .login-wrapper {
@@ -186,14 +178,13 @@ const handleLogin = async () => {
 }
 
 .login-box {
-  background: #ffffff;
+  background: $bg-card;
+  border: 1px solid $border-base;
   border-radius: 24px;
   padding: 48px 40px;
-  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
-/* 登录头部 */
+/* Login header */
 .login-header {
   text-align: center;
   margin-bottom: 40px;
@@ -210,14 +201,14 @@ const handleLogin = async () => {
 .logo-icon {
   width: 48px;
   height: 48px;
-  background: linear-gradient(135deg, $success-color 0%, darken($success-color, 10%) 100%);
+  background: linear-gradient(135deg, $accent-mint 0%, #059669 100%);
   border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
   font-size: 22px;
-  color: white;
+  color: $bg-primary;
 }
 
 .logo-text {
@@ -227,7 +218,7 @@ const handleLogin = async () => {
   letter-spacing: -0.5px;
 
   span {
-    color: $success-color;
+    color: $accent-mint;
   }
 }
 
@@ -244,69 +235,140 @@ const handleLogin = async () => {
   color: $text-muted;
 }
 
-/* 登录表单 */
+/* Login form */
 .login-form {
-  :deep(.el-form-item) {
-    margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: $text-secondary;
+
+  .input-icon {
+    font-size: 16px;
+    color: $text-muted;
   }
 }
 
-.input-wrapper {
-  position: relative;
+.input {
   width: 100%;
+  padding: 14px 20px;
+  background: $bg-tertiary;
+  border: 1px solid $border-base;
+  border-radius: 12px;
+  font-size: 15px;
+  color: $text-primary;
+  font-family: inherit;
+  transition: all $transition-normal;
 
-  .input-icon {
+  &::placeholder {
+    color: $text-muted;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $accent-mint;
+    box-shadow: 0 0 0 3px rgba($accent-mint, 0.1);
+  }
+}
+
+.password-input-wrapper {
+  position: relative;
+
+  .input {
+    padding-right: 48px;
+  }
+
+  .password-toggle {
     position: absolute;
-    left: 16px;
+    right: 16px;
     top: 50%;
     transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
     color: $text-muted;
-    z-index: 1;
-    font-size: 18px;
-  }
-
-  :deep(.el-input__wrapper) {
-    padding: 8px 16px 8px 48px;
-    border-radius: 12px;
-    box-shadow: 0 0 0 1px $border-base inset;
-    background: $bg-secondary;
+    transition: color $transition-fast;
 
     &:hover {
-      box-shadow: 0 0 0 1px $border-dark inset;
+      color: $text-secondary;
     }
 
-    &.is-focus {
-      box-shadow: 0 0 0 1px $primary-color inset, 0 0 0 3px rgba($primary-color, 0.1);
+    .toggle-icon {
+      font-size: 20px;
     }
   }
+}
 
-  :deep(.el-input__inner) {
-    font-size: 15px;
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: rgba($danger-color, 0.08);
+  border-radius: 10px;
+  font-size: 14px;
+  color: $danger-color;
+
+  .error-icon {
+    font-size: 18px;
   }
 }
 
 .login-btn {
   width: 100%;
-  height: 48px;
+  padding: 16px;
   border-radius: 12px;
   font-size: 16px;
   font-weight: 600;
-  margin-top: 8px;
-  background: linear-gradient(135deg, $primary-color 0%, darken($primary-color, 10%) 100%);
+  background: linear-gradient(135deg, $accent-mint 0%, #059669 100%);
+  color: $bg-primary;
   border: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  transition: all $transition-normal;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 
-  &:hover {
+  &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba($primary-color, 0.35);
+    box-shadow: 0 8px 24px rgba($accent-mint, 0.3);
   }
 
-  &:active {
-    transform: translateY(0);
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .loading-icon {
+    animation: spin 1s linear infinite;
+  }
+
+  .btn-icon {
+    font-size: 20px;
   }
 }
 
-/* 登录底部 */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Login footer */
 .login-footer {
   text-align: center;
   margin-top: 32px;

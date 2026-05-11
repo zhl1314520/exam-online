@@ -1,5 +1,6 @@
 <template>
   <div class="page-container">
+
     <!-- 统计卡片 -->
     <div class="stats-row">
       <div class="stat-card">
@@ -381,13 +382,15 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@use '@/styles/variables.scss' as *;
 
 .page-container {
   max-width: 1400px;
+  position: relative;
 }
 
-/* 统计卡片 */
+
+/* 统计卡片 - 原型样式 */
 .stats-row {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -398,7 +401,7 @@ onMounted(() => {
 .stat-card {
   background: $bg-card;
   border: 1px solid $border-base;
-  border-radius: $radius-lg;
+  border-radius: 12px;
   padding: 20px;
   display: flex;
   align-items: center;
@@ -409,7 +412,7 @@ onMounted(() => {
     font-weight: 700;
     color: $text-primary;
     margin-bottom: 4px;
-    font-family: $font-mono;
+    font-family: 'JetBrains Mono', monospace;
   }
 
   p {
@@ -421,29 +424,30 @@ onMounted(() => {
 .stat-icon {
   width: 48px;
   height: 48px;
-  border-radius: $radius-md;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 22px;
 
   &.primary {
-    background: rgba($primary-color, 0.1);
-    color: $primary-color;
+    background: rgba(16, 185, 129, 0.15);
+    color: $accent-mint;
   }
 
   &.success {
-    background: rgba($success-color, 0.1);
-    color: $success-color;
+    background: rgba(16, 185, 129, 0.15);
+    color: $accent-mint;
   }
 
   &.warning {
-    background: rgba($warning-color, 0.1);
-    color: $warning-color;
+    background: rgba(245, 158, 11, 0.15);
+    color: $accent-amber;
   }
 
   &.danger {
-    background: rgba($danger-color, 0.1);
-    color: $danger-color;
+    background: rgba(255, 107, 107, 0.15);
+    color: $accent-coral;
   }
 }
 

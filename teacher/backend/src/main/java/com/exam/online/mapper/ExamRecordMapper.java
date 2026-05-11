@@ -13,6 +13,8 @@ public interface ExamRecordMapper {
 
     List<ExamRecord> selectByExamId(@Param("examId") Integer examId);
 
+    List<ExamRecord> selectAll();
+
     List<ExamRecord> selectByStudentId(@Param("studentId") Integer studentId);
 
     int countByExamId(@Param("examId") Integer examId);

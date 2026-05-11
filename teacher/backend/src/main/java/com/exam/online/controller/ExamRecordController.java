@@ -47,6 +47,17 @@ public class ExamRecordController {
         return ResponseDTO.success(PageDTO.of((Page<ExamRecord>) records));
     }
 
+    @GetMapping("/page")
+    public ResponseDTO<PageDTO<ExamRecord>> getAllPage(
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize) {
+
+        PageHelper.startPage(pageNum, pageSize);
+        List<ExamRecord> records = examRecordService.getAll();
+
+        return ResponseDTO.success(PageDTO.of((Page<ExamRecord>) records));
+    }
+
     @GetMapping("/{id}")
     public ResponseDTO<ExamRecord> getById(@PathVariable Integer id) {
         ExamRecord record = examRecordService.getById(id);

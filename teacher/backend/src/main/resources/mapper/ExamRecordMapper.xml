@@ -39,6 +39,15 @@
         ORDER BY er.total_score DESC
     </select>
 
+    <select id="selectAll" resultMap="ExamRecordResultMap">
+        SELECT er.*, e.exam_name, s.real_name as student_name, s.student_no, c.class_name
+        FROM exam_record er
+        LEFT JOIN exam e ON er.exam_id = e.exam_id
+        LEFT JOIN student s ON er.student_id = s.student_id
+        LEFT JOIN class c ON s.class_id = c.class_id
+        ORDER BY er.submit_time DESC
+    </select>
+
     <select id="selectByStudentId" resultMap="ExamRecordResultMap">
         SELECT er.*, e.exam_name, s.real_name as student_name, s.student_no, c.class_name
         FROM exam_record er

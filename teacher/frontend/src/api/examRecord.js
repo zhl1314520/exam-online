@@ -5,7 +5,10 @@ export function getExamRecords(examId) {
 }
 
 export function getExamRecordsPage(examId, params) {
-  return request.get(`/records/exam/${examId}/page`, { params })
+  if (examId) {
+    return request.get(`/records/exam/${examId}/page`, { params })
+  }
+  return request.get('/records/page', { params })
 }
 
 export function getExamStatistics(examId) {

@@ -6,7 +6,11 @@
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+/* Import Space Grotesk and JetBrains Mono fonts */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* Iconify Solar icons */
+@import url('https://code.iconify.design/3/3.1.0/iconify.min.js');
 
 * {
   margin: 0;
@@ -14,155 +18,198 @@
   box-sizing: border-box;
 }
 
+:root {
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F8FAFC;
+  --bg-tertiary: #F1F5F9;
+  --bg-card: #FFFFFF;
+  --text-primary: #1E293B;
+  --text-secondary: #64748B;
+  --text-muted: #94A3B8;
+  --accent-mint: #10B981;
+  --accent-amber: #F59E0B;
+  --accent-coral: #EF4444;
+  --accent-sky: #0EA5E9;
+  --border: #E2E8F0;
+}
+
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: #ffffff;
-  color: #0f172a;
+  font-family: 'Space Grotesk', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
   min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* 全局滚动条样式 */
+
+/* Scrollbar styling for light theme */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: var(--bg-secondary);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #CBD5E1;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #94A3B8;
 }
 
-/* Element Plus 组件样式覆盖 */
-.el-button {
+/* Button base styles */
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
   border-radius: 10px;
+  font-size: 14px;
   font-weight: 500;
+  cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.el-button--primary {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   border: none;
+  font-family: inherit;
 }
 
-.el-button--primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+.btn-secondary {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
 }
 
-.el-input__wrapper {
-  border-radius: 10px;
-  box-shadow: 0 0 0 1px #e2e8f0 inset;
+.btn-secondary:hover {
+  background: var(--bg-secondary);
+  border-color: var(--text-muted);
 }
 
-.el-input__wrapper:hover {
-  box-shadow: 0 0 0 1px #cbd5e1 inset;
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent-mint) 0%, #059669 100%);
+  color: var(--bg-primary);
 }
 
-.el-input__wrapper.is-focus {
-  box-shadow: 0 0 0 1px #3b82f6 inset, 0 0 0 3px rgba(59, 130, 246, 0.1);
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
 }
 
-.el-card {
-  border-radius: 16px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+/* Input base styles */
+.input {
+  width: 100%;
+  padding: 14px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-size: 14px;
+  color: var(--text-primary);
+  font-family: inherit;
+  transition: all 0.3s;
 }
 
-.el-card__header {
-  border-bottom: 1px solid #f1f5f9;
-  padding: 20px 24px;
+.input::placeholder {
+  color: var(--text-muted);
 }
 
-.el-table {
-  --el-table-header-bg-color: #f8fafc;
-  --el-table-border-color: #f1f5f9;
-  --el-table-row-hover-bg-color: #f8fafc;
+.input:focus {
+  outline: none;
+  border-color: var(--accent-sky);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
 }
 
-.el-table th.el-table__cell {
-  font-weight: 600;
-  color: #475569;
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.el-tag {
-  border-radius: 6px;
-  font-weight: 500;
-}
-
-.el-dialog {
+/* Card base styles */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 16px;
   overflow: hidden;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05);
 }
 
-.el-dialog__header {
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+/* Panel header styles */
+.panel-header {
   padding: 20px 24px;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.el-dialog__title {
+.panel-title {
+  font-size: 16px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--text-primary);
 }
 
-.el-pagination {
-  --el-pagination-button-bg-color: #ffffff;
-  --el-pagination-hover-color: #3b82f6;
+.panel-content {
+  padding: 24px;
 }
 
-.el-pagination .el-pager li {
-  border-radius: 8px;
+/* Tag styles */
+.tag {
+  padding: 4px 10px;
+  background: var(--bg-tertiary);
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Status tags */
+.status-tag {
+  font-size: 12px;
   font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 20px;
 }
 
-.el-pagination .el-pager li.is-active {
-  background: #3b82f6;
+.status-success {
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
 }
 
-.el-form-item__label {
-  font-weight: 500;
-  color: #475569;
+.status-warning {
+  background: rgba(245, 158, 11, 0.1);
+  color: #D97706;
 }
 
-.el-select .el-input__wrapper {
-  border-radius: 10px;
+.status-error {
+  background: rgba(239, 68, 68, 0.1);
+  color: #DC2626;
 }
 
-.el-dropdown-menu {
-  border-radius: 12px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+.status-info {
+  background: rgba(14, 165, 233, 0.1);
+  color: #0284C7;
 }
 
-.el-dropdown-menu__item {
-  border-radius: 8px;
-  margin: 2px 6px;
-  padding: 10px 16px;
+/* Monospace numbers */
+.mono {
+  font-family: 'JetBrains Mono', monospace;
 }
 
-.el-dropdown-menu__item:hover {
-  background: #f8fafc;
+/* Loading animation */
+.loading {
+  animation: spin 1s linear infinite;
 }
 
-.el-message-box {
-  border-radius: 16px;
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
-.el-message {
-  border-radius: 10px;
+/* Fade in animation */
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>

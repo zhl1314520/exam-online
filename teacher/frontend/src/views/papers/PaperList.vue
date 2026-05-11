@@ -1,5 +1,9 @@
 <template>
   <div class="page-container">
+    <!-- Glow orbs for decorative effect -->
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+
     <!-- 工具栏 -->
     <div class="toolbar">
       <div class="search-box">
@@ -421,10 +425,37 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@use '@/styles/variables.scss' as *;
 
 .page-container {
   max-width: 1400px;
+  position: relative;
+}
+
+/* Glow orbs - 组卷管理使用sky和mint配色 */
+.glow-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.1;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.glow-orb-1 {
+  width: 500px;
+  height: 500px;
+  background: $accent-sky;
+  top: -150px;
+  right: 10%;
+}
+
+.glow-orb-2 {
+  width: 400px;
+  height: 400px;
+  background: $accent-mint;
+  bottom: -100px;
+  left: 15%;
 }
 
 .toolbar {
@@ -467,7 +498,7 @@ onMounted(() => {
   }
 }
 
-/* 试卷卡片网格 */
+/* 试卷卡片网格 - 原型样式 */
 .paper-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -478,14 +509,14 @@ onMounted(() => {
 .paper-card {
   background: $bg-card;
   border: 1px solid $border-base;
-  border-radius: $radius-lg;
+  border-radius: 16px;
   padding: 24px;
-  transition: all $transition-normal;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
   &:hover {
-    box-shadow: $shadow-lg;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
     transform: translateY(-2px);
-    border-color: $border-dark;
+    border-color: #3f3f46;
   }
 }
 
@@ -536,13 +567,13 @@ onMounted(() => {
   .stat-value {
     font-size: 24px;
     font-weight: 700;
-    color: $text-primary;
-    font-family: $font-mono;
+    color: $accent-mint;
+    font-family: 'JetBrains Mono', monospace;
     margin-bottom: 4px;
   }
 
   .stat-label {
-    font-size: 12px;
+    font-size: 11px;
     color: $text-muted;
   }
 }

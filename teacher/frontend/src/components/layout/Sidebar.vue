@@ -1,52 +1,43 @@
 <template>
   <aside class="sidebar">
     <div class="logo">
-      <div class="logo-icon">E</div>
-      <div class="logo-text">Exam<span>Flow</span></div>
+      <div class="logo-icon">
+        <Icon icon="solar:graduation-cap-bold-duotone" class="logo-icon-svg" />
+      </div>
+      <div class="logo-text">教师端</div>
     </div>
 
-    <nav class="nav-section">
-      <div class="nav-label">概览</div>
+    <nav class="nav-menu">
       <router-link to="/dashboard" class="nav-item" :class="{ active: currentRoute === '/dashboard' }">
-        <el-icon size="20"><Grid /></el-icon>
+        <Icon icon="solar:widget-2-bold-duotone" class="nav-icon" />
         <span class="nav-item-text">仪表盘</span>
       </router-link>
-    </nav>
-
-    <nav class="nav-section">
-      <div class="nav-label">题库</div>
       <router-link to="/questions" class="nav-item" :class="{ active: currentRoute === '/questions' }">
-        <el-icon size="20"><Document /></el-icon>
+        <Icon icon="solar:notebook-bold-duotone" class="nav-icon" />
         <span class="nav-item-text">题库管理</span>
+        <span v-if="questionCount > 0" class="nav-badge">{{ formatCount(questionCount) }}</span>
       </router-link>
-    </nav>
-
-    <nav class="nav-section">
-      <div class="nav-label">试卷</div>
       <router-link to="/papers" class="nav-item" :class="{ active: currentRoute === '/papers' }">
-        <el-icon size="20"><Collection /></el-icon>
+        <Icon icon="solar:document-add-bold-duotone" class="nav-icon" />
         <span class="nav-item-text">试卷管理</span>
       </router-link>
-    </nav>
-
-    <nav class="nav-section">
-      <div class="nav-label">考试</div>
       <router-link to="/exams" class="nav-item" :class="{ active: currentRoute === '/exams' }">
-        <el-icon size="20"><Calendar /></el-icon>
+        <Icon icon="solar:clipboard-check-bold-duotone" class="nav-icon" />
         <span class="nav-item-text">考试管理</span>
+        <span v-if="ongoingExamCount > 0" class="nav-badge ongoing">进行中</span>
       </router-link>
       <router-link to="/records" class="nav-item" :class="{ active: currentRoute === '/records' }">
-        <el-icon size="20"><TrendCharts /></el-icon>
+        <Icon icon="solar:chart-2-bold-duotone" class="nav-icon" />
         <span class="nav-item-text">成绩分析</span>
       </router-link>
     </nav>
 
     <div class="sidebar-footer">
       <div class="user-info">
-        <el-avatar :size="40" :icon="UserFilled" class="user-avatar" />
+        <img :src="userAvatar" alt="Teacher" class="user-avatar" />
         <div class="user-details">
           <div class="user-name">{{ authStore.teacherName || '教师' }}</div>
-          <div class="user-role">在线考试系统</div>
+          <div class="user-role">{{ authStore.departmentName || '在线考试系统' }}</div>
         </div>
       </div>
     </div>
@@ -54,22 +45,40 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { Icon } from '@iconify/vue'
 import { useAuthStore } from '@/stores/auth'
-import { Grid, Document, Collection, Calendar, TrendCharts, UserFilled } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const authStore = useAuthStore()
 const currentRoute = computed(() => route.path)
+
+const questionCount = ref(0)
+const ongoingExamCount = ref(0)
+
+const userAvatar = computed(() => {
+  return `https://picsum.photos/seed/${authStore.teacherNo || 'teacher1'}/80/80`
+})
+
+const formatCount = (count) => {
+  if (count >= 1000) {
+    return (count / 1000).toFixed(1) + 'k'
+  }
+  return count
+}
+
+onMounted(async () => {
+  // Could fetch counts from API here
+})
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@use '@/styles/variables.scss' as *;
 
 .sidebar {
   width: 280px;
-  background: linear-gradient(180deg, $bg-secondary 0%, $bg-primary 100%);
+  background: $bg-primary;
   border-right: 1px solid $border-base;
   padding: 32px 20px;
   position: fixed;
@@ -93,13 +102,18 @@ const currentRoute = computed(() => route.path)
 .logo-icon {
   width: 42px;
   height: 42px;
-  background: linear-gradient(135deg, $success-color 0%, darken($success-color, 10%) 100%);
+  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
   font-size: 18px;
+  color: white;
+}
+
+.logo-icon-svg {
+  font-size: 24px;
   color: white;
 }
 
@@ -110,22 +124,14 @@ const currentRoute = computed(() => route.path)
   color: $text-primary;
 
   span {
-    color: $success-color;
+    color: $accent-mint;
   }
 }
 
-.nav-section {
-  margin-bottom: 32px;
-}
-
-.nav-label {
-  font-size: 11px;
-  font-weight: 500;
-  color: $text-muted;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  padding: 0 12px;
-  margin-bottom: 12px;
+.nav-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .nav-item {
@@ -149,7 +155,7 @@ const currentRoute = computed(() => route.path)
     top: 0;
     width: 3px;
     height: 100%;
-    background: $success-color;
+    background: $primary-color;
     transform: scaleY(0);
     transition: transform $transition-normal;
   }
@@ -160,8 +166,8 @@ const currentRoute = computed(() => route.path)
   }
 
   &.active {
-    background: linear-gradient(90deg, rgba($success-color, 0.1) 0%, transparent 100%);
-    color: $text-primary;
+    background: linear-gradient(90deg, rgba($primary-color, 0.1) 0%, transparent 100%);
+    color: $primary-color;
 
     &::before {
       transform: scaleY(1);
@@ -169,15 +175,33 @@ const currentRoute = computed(() => route.path)
   }
 }
 
+.nav-icon {
+  font-size: 20px;
+}
+
 .nav-item-text {
   font-size: 14px;
   font-weight: 500;
 }
 
+.nav-badge {
+  margin-left: auto;
+  background: $primary-color;
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+.nav-badge.ongoing {
+  background: $accent-coral;
+}
+
 .sidebar-footer {
   margin-top: auto;
   padding: 20px;
-  background: $bg-tertiary;
+  background: $bg-secondary;
   border-radius: 12px;
   border: 1px solid $border-base;
 }
@@ -189,8 +213,11 @@ const currentRoute = computed(() => route.path)
 }
 
 .user-avatar {
+  width: 40px;
+  height: 40px;
   border-radius: 10px;
-  border: 2px solid $success-color;
+  object-fit: cover;
+  border: 2px solid $primary-color;
 }
 
 .user-details {

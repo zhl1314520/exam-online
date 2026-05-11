@@ -16,12 +16,14 @@ import Header from './Header.vue'
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@use '@/styles/variables.scss' as *;
 
 .layout-container {
   display: flex;
   min-height: 100vh;
-  background: linear-gradient(180deg, $bg-secondary 0%, $bg-primary 100%);
+  background: $bg-secondary;
+  position: relative;
+  z-index: 1;
 }
 
 .main-wrapper {
@@ -30,11 +32,15 @@ import Header from './Header.vue'
   flex-direction: column;
   margin-left: 280px;
   min-height: 100vh;
+  position: relative;
+  z-index: 1;
 }
 
 .main-content {
   flex: 1;
   padding: 0 40px 40px;
   overflow: auto;
+  position: relative;
+  z-index: 1;
 }
 </style>
