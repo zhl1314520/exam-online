@@ -8,8 +8,8 @@ public class ExamPaper {
     private Integer paperId;
     private String paperName;
     private Integer subjectId;
-    private Integer totalScore;
-    private Integer passScore;
+    private Double totalScore;
+    private Double passScore;
     private Integer duration;
     private Integer questionCount;
     private Integer createBy;

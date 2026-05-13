@@ -1,17 +1,17 @@
 <template>
-  <div class="exam-record-page fade-in">
+  <div class="exam-record-page">
     <header class="page-header">
       <h1 class="page-title">考试记录</h1>
       <p class="page-desc">查看您已完成的所有考试记录</p>
     </header>
 
     <div v-if="loading" class="loading-container">
-      <Icon icon="lucide:loader-2" class="loading-icon" />
+      <Icon icon="mdi:loading" class="loading-icon" />
       <p>加载中...</p>
     </div>
 
     <div v-else-if="records.length === 0" class="empty-state">
-      <Icon icon="lucide:file-x" class="empty-icon" />
+      <Icon icon="mdi:file-document-remove" class="empty-icon" />
       <h3>暂无考试记录</h3>
       <p>您还没有完成任何考试</p>
     </div>
@@ -20,25 +20,22 @@
       <div
         v-for="record in records"
         :key="record.recordId"
-        class="record-card card noise-bg"
+        class="record-card"
       >
         <div class="record-header">
           <h3 class="record-name">{{ record.examName }}</h3>
-          <span
-            class="status-tag"
-            :class="record.totalScore >= record.passScore ? 'status-success' : 'status-error'"
-          >
+          <el-tag :type="record.totalScore >= record.passScore ? 'success' : 'danger'" size="small">
             {{ record.totalScore >= record.passScore ? '通过' : '未通过' }}
-          </span>
+          </el-tag>
         </div>
 
         <div class="record-meta">
           <span class="meta-item">
-            <Icon icon="lucide:calendar" />
+            <Icon icon="mdi:calendar" />
             {{ formatDate(record.submitTime || record.startTime) }}
           </span>
           <span class="meta-item">
-            <Icon icon="lucide:clock" />
+            <Icon icon="mdi:clock" />
             {{ record.duration }}分钟
           </span>
         </div>
@@ -62,10 +59,10 @@
         </div>
 
         <div class="record-actions">
-          <button class="btn btn-secondary" @click="viewDetail(record.recordId)">
-            <Icon icon="lucide:eye" />
+          <el-button type="primary" @click="viewDetail(record.recordId)">
+            <Icon icon="mdi:eye" />
             查看答卷
-          </button>
+          </el-button>
         </div>
       </div>
     </div>
@@ -109,21 +106,23 @@ const viewDetail = (recordId) => {
 onMounted(fetchRecords)
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/styles/variables' as *;
+
 .page-header {
-  margin-bottom: 28px;
+  margin-bottom: $spacing-xl;
 }
 
 .page-title {
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 6px;
+  font-size: $font-size-2xl;
+  font-weight: 600;
+  color: $dark;
+  margin-bottom: $spacing-xs;
 }
 
 .page-desc {
-  font-size: 15px;
-  color: var(--text-secondary);
+  font-size: $font-size-md;
+  color: $gray;
 }
 
 .loading-container {
@@ -131,14 +130,13 @@ onMounted(fetchRecords)
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 80px 20px;
-  color: var(--text-muted);
+  padding: $spacing-2xl;
+  color: $gray;
 }
 
 .loading-icon {
-  width: 40px;
-  height: 40px;
-  margin-bottom: 16px;
+  font-size: 40px;
+  margin-bottom: $spacing-md;
   animation: spin 1s linear infinite;
 }
 
@@ -151,102 +149,105 @@ onMounted(fetchRecords)
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 80px 20px;
+  padding: $spacing-2xl;
   text-align: center;
 }
 
 .empty-icon {
-  width: 64px;
-  height: 64px;
-  color: var(--text-muted);
-  margin-bottom: 20px;
+  font-size: 64px;
+  color: $gray-light;
+  margin-bottom: $spacing-lg;
 }
 
 .empty-state h3 {
-  font-size: 18px;
-  color: var(--text-primary);
-  margin-bottom: 8px;
+  font-size: $font-size-lg;
+  color: $dark;
+  margin-bottom: $spacing-sm;
 }
 
 .empty-state p {
-  color: var(--text-secondary);
+  color: $gray;
 }
 
 .record-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-  gap: 20px;
+  gap: $spacing-lg;
 }
 
 .record-card {
-  padding: 24px;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
+  background: $bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-xl;
+  box-shadow: $shadow-sm;
+  border: 1px solid $border-color;
+  transition: all $transition-normal;
 
-.record-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
 }
 
 .record-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: $spacing-md;
 }
 
 .record-name {
-  font-size: 16px;
+  font-size: $font-size-md;
   font-weight: 600;
-  color: var(--text-primary);
+  color: $dark;
   line-height: 1.4;
   flex: 1;
 }
 
 .record-meta {
   display: flex;
-  gap: 16px;
-  margin-bottom: 20px;
+  gap: $spacing-lg;
+  margin-bottom: $spacing-lg;
 }
 
 .meta-item {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  color: var(--text-secondary);
+  gap: $spacing-sm;
+  font-size: $font-size-sm;
+  color: $gray;
 }
 
 .record-score {
-  padding: 16px;
-  background: var(--bg-secondary);
-  border-radius: var(--radius-md);
-  margin-bottom: 16px;
+  padding: $spacing-md;
+  background: $light;
+  border-radius: $radius-md;
+  margin-bottom: $spacing-lg;
 }
 
 .score-display {
   display: flex;
   align-items: baseline;
   gap: 4px;
-  margin-bottom: 10px;
+  margin-bottom: $spacing-sm;
 }
 
 .score-value {
   font-size: 32px;
   font-weight: 700;
-  color: var(--primary-color);
+  color: $accent;
 }
 
 .score-total {
-  font-size: 16px;
-  color: var(--text-muted);
+  font-size: $font-size-lg;
+  color: $gray-light;
 }
 
 .score-bar {
   height: 6px;
-  background: var(--border-color);
+  background: $light;
   border-radius: 3px;
-  margin-bottom: 10px;
+  margin-bottom: $spacing-sm;
 }
 
 .score-fill {
@@ -256,18 +257,18 @@ onMounted(fetchRecords)
 }
 
 .score-fill.pass {
-  background: var(--success-color);
+  background: $success;
 }
 
 .score-fill.fail {
-  background: var(--error-color);
+  background: $error;
 }
 
 .score-info {
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
-  color: var(--text-muted);
+  font-size: $font-size-xs;
+  color: $gray;
 }
 
 .record-actions {

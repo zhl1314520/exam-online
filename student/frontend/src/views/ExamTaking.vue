@@ -9,7 +9,7 @@
 
       <div class="header-center">
         <div class="timer-box" :class="{ 'warning': remainingTime < 300 }">
-          <Icon icon="lucide:clock" class="timer-icon" />
+          <Icon icon="mdi:clock" class="timer-icon" />
           <span class="timer-text">{{ formatTime(remainingTime) }}</span>
         </div>
       </div>
@@ -22,7 +22,7 @@
           </div>
         </div>
         <button class="btn btn-accent submit-btn" @click="handleSubmit">
-          <Icon icon="lucide:check-circle" />
+          <Icon icon="mdi:check-circle" />
           交卷
         </button>
       </div>
@@ -154,7 +154,7 @@
               class="btn btn-secondary"
               @click="goToQuestion(currentQuestionIndex - 1)"
             >
-              <Icon icon="lucide:chevron-left" />
+              <Icon icon="mdi:chevron-left" />
               上一题
             </button>
             <button
@@ -163,7 +163,7 @@
               @click="goToQuestion(currentQuestionIndex + 1)"
             >
               下一题
-              <Icon icon="lucide:chevron-right" />
+              <Icon icon="mdi:chevron-right" />
             </button>
           </div>
         </div>
@@ -174,7 +174,7 @@
     <div v-if="showScreenWarning" class="modal-overlay">
       <div class="modal-card">
         <div class="modal-header">
-          <Icon icon="lucide:alert-triangle" class="warning-icon" />
+          <Icon icon="mdi:alert-triangle" class="warning-icon" />
           <h3>警告</h3>
         </div>
         <p class="modal-body">
@@ -193,7 +193,7 @@
     <div v-if="showSubmitModal" class="modal-overlay">
       <div class="modal-card">
         <div class="modal-header">
-          <Icon icon="lucide:help-circle" class="info-icon" />
+          <Icon icon="mdi:help-circle" class="info-icon" />
           <h3>确认交卷</h3>
         </div>
         <p class="modal-body">

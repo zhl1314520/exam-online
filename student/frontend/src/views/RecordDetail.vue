@@ -3,7 +3,7 @@
     <header class="page-header">
       <div class="header-left">
         <button class="btn btn-secondary back-btn" @click="$router.back()">
-          <Icon icon="lucide:arrow-left" />
+          <Icon icon="mdi:arrow-left" />
           返回
         </button>
         <h1 class="page-title">答卷详情</h1>
@@ -19,7 +19,7 @@
     </header>
 
     <div v-if="loading" class="loading-container">
-      <Icon icon="lucide:loader-2" class="loading-icon" />
+      <Icon icon="mdi:loader-2" class="loading-icon" />
       <p>加载中...</p>
     </div>
 

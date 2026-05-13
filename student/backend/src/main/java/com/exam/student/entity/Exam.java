@@ -19,7 +19,7 @@ public class Exam {
     // 关联字段
     private String paperName;
     private Integer duration;
-    private Integer totalScore;
-    private Integer passScore;
+    private Double totalScore;
+    private Double passScore;
     private String subjectName;
 }

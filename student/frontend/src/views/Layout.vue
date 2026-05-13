@@ -3,7 +3,7 @@
     <header class="nav-bar">
       <div class="nav-content">
         <div class="nav-brand">
-          <Icon icon="lucide:graduation-cap" class="brand-icon" />
+          <Icon icon="mdi:school" class="brand-icon" />
           <span class="brand-text">在线考试系统</span>
         </div>
 
@@ -21,23 +21,25 @@
         </nav>
 
         <div class="nav-right">
-          <div class="user-menu" @click="showUserMenu = !showUserMenu">
-            <Icon icon="lucide:user-circle" class="user-icon" />
-            <span class="user-name">{{ authStore.studentName }}</span>
-            <Icon icon="lucide:chevron-down" class="chevron-icon" />
-
-            <div v-if="showUserMenu" class="user-dropdown">
-              <router-link to="/profile" class="dropdown-item">
-                <Icon icon="lucide:settings" />
-                <span>个人信息</span>
-              </router-link>
-              <div class="dropdown-divider"></div>
-              <div class="dropdown-item" @click="handleLogout">
-                <Icon icon="lucide:log-out" />
-                <span>退出登录</span>
-              </div>
+          <el-dropdown @command="handleCommand">
+            <div class="user-menu">
+              <Icon icon="mdi:account-circle" class="user-icon" />
+              <span class="user-name">{{ authStore.studentName }}</span>
+              <Icon icon="mdi:chevron-down" class="chevron-icon" />
             </div>
-          </div>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item command="profile">
+                  <Icon icon="mdi:account" class="dropdown-icon" />
+                  <span>个人信息</span>
+                </el-dropdown-item>
+                <el-dropdown-item divided command="logout">
+                  <Icon icon="mdi:logout" class="dropdown-icon" />
+                  <span>退出登录</span>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
         </div>
       </div>
     </header>
@@ -49,7 +51,6 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
 import { useAuthStore } from '@/stores/auth.js'
@@ -57,25 +58,35 @@ import { useAuthStore } from '@/stores/auth.js'
 const router = useRouter()
 const authStore = useAuthStore()
 
-const showUserMenu = ref(false)
-
 const menuItems = [
-  { path: '/exams', label: '待考考试', icon: 'lucide:calendar-clock' },
-  { path: '/records', label: '考试记录', icon: 'lucide:file-text' },
-  { path: '/wrong-book', label: '错题本', icon: 'lucide:book-x' },
-  { path: '/score-report', label: '成绩单', icon: 'lucide:chart-bar' }
+  { path: '/exams', label: '待考考试', icon: 'mdi:calendar-clock' },
+  { path: '/records', label: '考试记录', icon: 'mdi:file-document' },
+  { path: '/wrong-book', label: '错题本', icon: 'mdi:book-remove' },
+  { path: '/score-report', label: '成绩单', icon: 'mdi:chart-bar' }
 ]
 
-const handleLogout = () => {
-  authStore.logout()
-  router.push('/login')
+const handleCommand = (command) => {
+  if (command === 'profile') {
+    router.push('/profile')
+  } else if (command === 'logout') {
+    authStore.logout()
+    router.push('/login')
+  }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/styles/variables' as *;
+
 .layout {
   min-height: 100vh;
-  background: var(--bg-primary);
+  background: $bg-primary;
+}
+
+.nav-bar {
+  background: $bg-card;
+  border-bottom: 1px solid $border-color;
+  box-shadow: $shadow-sm;
 }
 
 .nav-content {
@@ -84,120 +95,105 @@ const handleLogout = () => {
   justify-content: space-between;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 $spacing-xl;
   height: 64px;
 }
 
 .nav-brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: $spacing-sm;
   font-size: 18px;
   font-weight: 600;
-  color: var(--primary-color);
+  color: $accent;
 }
 
 .brand-icon {
-  width: 28px;
-  height: 28px;
+  font-size: 28px;
+  color: $accent;
 }
 
 .nav-menu {
   display: flex;
-  gap: 8px;
+  gap: $spacing-xs;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  color: $gray;
+  text-decoration: none;
+  border-radius: $radius-md;
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  transition: all $transition-fast;
+
+  &:hover {
+    color: $accent;
+    background: rgba($accent, 0.05);
+  }
+
+  &.active {
+    color: $accent;
+    background: rgba($accent, 0.1);
+  }
 }
 
 .nav-icon {
-  width: 18px;
-  height: 18px;
+  font-size: 20px;
 }
 
 .nav-right {
   display: flex;
   align-items: center;
-  gap: 16px;
 }
 
 .user-menu {
-  position: relative;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  border-radius: var(--radius-md);
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-md;
   cursor: pointer;
-  transition: background 0.2s;
-}
+  transition: background $transition-fast;
 
-.user-menu:hover {
-  background: var(--bg-secondary);
+  &:hover {
+    background: $light;
+  }
 }
 
 .user-icon {
-  width: 28px;
-  height: 28px;
-  color: var(--text-secondary);
+  font-size: 28px;
+  color: $gray;
 }
 
 .user-name {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-primary);
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: $dark;
 }
 
 .chevron-icon {
-  width: 16px;
-  height: 16px;
-  color: var(--text-muted);
+  font-size: 16px;
+  color: $gray-light;
 }
 
-.user-dropdown {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 8px;
-  min-width: 160px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
-  z-index: 100;
-}
-
-.dropdown-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
-  font-size: 14px;
-  color: var(--text-primary);
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.dropdown-item:hover {
-  background: var(--bg-secondary);
-}
-
-.dropdown-divider {
-  height: 1px;
-  background: var(--border-color);
-  margin: 4px 0;
+.dropdown-icon {
+  font-size: 18px;
+  margin-right: $spacing-sm;
 }
 
 .main-content {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 24px;
+  padding: $spacing-xl;
 }
 
 @media (max-width: 768px) {
   .nav-menu span {
     display: none;
-  }
-
-  .nav-menu {
-    gap: 4px;
   }
 
   .user-name {

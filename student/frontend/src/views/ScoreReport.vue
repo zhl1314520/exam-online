@@ -6,7 +6,7 @@
     </header>
 
     <div v-if="loading" class="loading-container">
-      <Icon icon="lucide:loader-2" class="loading-icon" />
+      <Icon icon="mdi:loader-2" class="loading-icon" />
       <p>加载中...</p>
     </div>
 
@@ -15,7 +15,7 @@
       <div class="stats-grid">
         <div class="stat-card card">
           <div class="stat-header">
-            <Icon icon="lucide:file-text" class="stat-icon" />
+            <Icon icon="mdi:file-text" class="stat-icon" />
             <span class="stat-label">已完成考试</span>
           </div>
           <span class="stat-value">{{ statistics.completedExams }}</span>
@@ -23,7 +23,7 @@
 
         <div class="stat-card card">
           <div class="stat-header">
-            <Icon icon="lucide:trending-up" class="stat-icon" />
+            <Icon icon="mdi:trending-up" class="stat-icon" />
             <span class="stat-label">平均分</span>
           </div>
           <span class="stat-value">{{ statistics.averageScore?.toFixed(1) }}</span>
@@ -31,7 +31,7 @@
 
         <div class="stat-card card">
           <div class="stat-header">
-            <Icon icon="lucide:award" class="stat-icon" />
+            <Icon icon="mdi:award" class="stat-icon" />
             <span class="stat-label">最高分</span>
           </div>
           <span class="stat-value">{{ statistics.highestScore?.toFixed(1) }}</span>
@@ -39,7 +39,7 @@
 
         <div class="stat-card card">
           <div class="stat-header">
-            <Icon icon="lucide:check-circle" class="stat-icon" />
+            <Icon icon="mdi:check-circle" class="stat-icon" />
             <span class="stat-label">通过率</span>
           </div>
           <span class="stat-value">{{ statistics.passRate?.toFixed(1) }}%</span>
@@ -53,7 +53,7 @@
         </div>
         <div class="chart-body">
           <div v-if="trendData.length === 0" class="empty-chart">
-            <Icon icon="lucide:bar-chart" class="empty-icon" />
+            <Icon icon="mdi:bar-chart" class="empty-icon" />
             <p>暂无成绩数据</p>
           </div>
           <div v-else class="trend-chart">
@@ -83,7 +83,7 @@
         </div>
         <div class="chart-body">
           <div v-if="!radarData.knowledgePoints?.length" class="empty-chart">
-            <Icon icon="lucide:radar" class="empty-icon" />
+            <Icon icon="mdi:radar" class="empty-icon" />
             <p>暂无知识点数据</p>
           </div>
           <div v-else class="radar-chart">

@@ -1,17 +1,17 @@
 <template>
-  <div class="exam-list-page fade-in">
+  <div class="exam-list-page">
     <header class="page-header">
       <h1 class="page-title">待考考试</h1>
       <p class="page-desc">查看即将开始的考试并参加考试</p>
     </header>
 
     <div v-if="loading" class="loading-container">
-      <Icon icon="lucide:loader-2" class="loading-icon" />
+      <Icon icon="mdi:loading" class="loading-icon" />
       <p>加载中...</p>
     </div>
 
     <div v-else-if="exams.length === 0" class="empty-state">
-      <Icon icon="lucide:calendar-x" class="empty-icon" />
+      <Icon icon="mdi:calendar-blank" class="empty-icon" />
       <h3>暂无待考考试</h3>
       <p>当前没有需要参加的考试</p>
     </div>
@@ -20,27 +20,27 @@
       <div
         v-for="exam in exams"
         :key="exam.examId"
-        class="exam-card card noise-bg"
+        class="exam-card"
       >
         <div class="exam-header">
           <div class="exam-subject">
-            <Icon icon="lucide:book-open" />
+            <Icon icon="mdi:book-open" />
             {{ exam.subjectName }}
           </div>
-          <span class="status-tag" :class="getStatusClass(exam)">
+          <el-tag :type="getStatusType(exam)" size="small">
             {{ getStatusText(exam) }}
-          </span>
+          </el-tag>
         </div>
 
         <h3 class="exam-name">{{ exam.examName }}</h3>
 
         <div class="exam-info">
           <div class="info-item">
-            <Icon icon="lucide:clock" />
+            <Icon icon="mdi:clock" />
             <span>{{ exam.duration }}分钟</span>
           </div>
           <div class="info-item">
-            <Icon icon="lucide:target" />
+            <Icon icon="mdi:target" />
             <span>{{ exam.totalScore }}分</span>
           </div>
         </div>
@@ -56,14 +56,16 @@
           </div>
         </div>
 
-        <button
-          class="btn btn-primary start-btn"
+        <el-button
+          type="primary"
+          size="large"
+          class="start-btn"
           :disabled="!isExamAvailable(exam)"
           @click="startExam(exam)"
         >
-          <Icon icon="lucide:play" />
+          <Icon icon="mdi:play" />
           {{ isExamAvailable(exam) ? '参加考试' : '未到考试时间' }}
-        </button>
+        </el-button>
       </div>
     </div>
   </div>
@@ -76,6 +78,7 @@ import { Icon } from '@iconify/vue'
 import { useExamStore } from '@/stores/exam.js'
 import examApi from '@/api/exam.js'
 import examTakingApi from '@/api/examTaking.js'
+import { ElMessage } from 'element-plus'
 
 const router = useRouter()
 const examStore = useExamStore()
@@ -112,14 +115,14 @@ const isExamAvailable = (exam) => {
   return now >= startTime && now <= endTime
 }
 
-const getStatusClass = (exam) => {
+const getStatusType = (exam) => {
   const now = new Date()
   const startTime = new Date(exam.startTime)
   const endTime = new Date(exam.endTime)
 
-  if (now > endTime) return 'status-error'
-  if (now >= startTime) return 'status-success'
-  return 'status-info'
+  if (now > endTime) return 'danger'
+  if (now >= startTime) return 'success'
+  return 'info'
 }
 
 const getStatusText = (exam) => {
@@ -141,28 +144,30 @@ const startExam = async (exam) => {
 
     router.push(`/exam-taking/${res.data.recordId}`)
   } catch (err) {
-    alert(err.message || '开始考试失败')
+    ElMessage.error(err.message || '开始考试失败')
   }
 }
 
 onMounted(fetchExams)
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/styles/variables' as *;
+
 .page-header {
-  margin-bottom: 28px;
+  margin-bottom: $spacing-xl;
 }
 
 .page-title {
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 6px;
+  font-size: $font-size-2xl;
+  font-weight: 600;
+  color: $dark;
+  margin-bottom: $spacing-xs;
 }
 
 .page-desc {
-  font-size: 15px;
-  color: var(--text-secondary);
+  font-size: $font-size-md;
+  color: $gray;
 }
 
 .loading-container {
@@ -170,14 +175,13 @@ onMounted(fetchExams)
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 80px 20px;
-  color: var(--text-muted);
+  padding: $spacing-2xl;
+  color: $gray;
 }
 
 .loading-icon {
-  width: 40px;
-  height: 40px;
-  margin-bottom: 16px;
+  font-size: 40px;
+  margin-bottom: $spacing-md;
   animation: spin 1s linear infinite;
 }
 
@@ -190,135 +194,111 @@ onMounted(fetchExams)
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 80px 20px;
+  padding: $spacing-2xl;
   text-align: center;
 }
 
 .empty-icon {
-  width: 64px;
-  height: 64px;
-  color: var(--text-muted);
-  margin-bottom: 20px;
+  font-size: 64px;
+  color: $gray-light;
+  margin-bottom: $spacing-lg;
 }
 
 .empty-state h3 {
-  font-size: 18px;
-  color: var(--text-primary);
-  margin-bottom: 8px;
+  font-size: $font-size-lg;
+  color: $dark;
+  margin-bottom: $spacing-sm;
 }
 
 .empty-state p {
-  color: var(--text-secondary);
+  color: $gray;
 }
 
 .exam-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 20px;
+  gap: $spacing-lg;
 }
 
 .exam-card {
-  padding: 24px;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
+  background: $bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-xl;
+  box-shadow: $shadow-sm;
+  border: 1px solid $border-color;
+  transition: all $transition-normal;
 
-.exam-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
 }
 
 .exam-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: $spacing-md;
 }
 
 .exam-subject {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: var(--primary-color);
+  gap: $spacing-sm;
+  font-size: $font-size-sm;
+  color: $accent;
   font-weight: 500;
-}
-
-.status-tag {
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.status-success {
-  background: rgba(61, 154, 90, 0.12);
-  color: var(--success-color);
-}
-
-.status-info {
-  background: rgba(74, 139, 168, 0.12);
-  color: var(--info-color);
-}
-
-.status-error {
-  background: rgba(209, 90, 90, 0.12);
-  color: var(--error-color);
 }
 
 .exam-name {
-  font-size: 17px;
+  font-size: $font-size-lg;
   font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 16px;
+  color: $dark;
+  margin-bottom: $spacing-md;
   line-height: 1.4;
 }
 
 .exam-info {
   display: flex;
-  gap: 24px;
-  margin-bottom: 16px;
+  gap: $spacing-lg;
+  margin-bottom: $spacing-md;
 }
 
 .info-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: var(--text-secondary);
+  gap: $spacing-sm;
+  font-size: $font-size-sm;
+  color: $gray;
 }
 
 .exam-time {
-  padding: 14px;
-  background: var(--bg-secondary);
-  border-radius: var(--radius-md);
-  margin-bottom: 20px;
+  padding: $spacing-md;
+  background: $light;
+  border-radius: $radius-md;
+  margin-bottom: $spacing-lg;
 }
 
 .time-row {
   display: flex;
   justify-content: space-between;
-  font-size: 13px;
-}
+  font-size: $font-size-sm;
 
-.time-row:not(:last-child) {
-  margin-bottom: 8px;
+  &:not(:last-child) {
+    margin-bottom: $spacing-xs;
+  }
 }
 
 .time-label {
-  color: var(--text-muted);
+  color: $gray;
 }
 
 .time-value {
-  color: var(--text-primary);
+  color: $dark;
   font-weight: 500;
 }
 
 .start-btn {
   width: 100%;
-}
-
-.start-btn:disabled {
-  background: var(--text-muted);
-  cursor: not-allowed;
 }
 </style>

@@ -1,35 +1,35 @@
 <template>
-  <div class="wrong-book-page fade-in">
+  <div class="wrong-book-page">
     <header class="page-header">
       <h1 class="page-title">错题本</h1>
       <p class="page-desc">自动收录您的错题，便于复习</p>
     </header>
 
     <div v-if="loading" class="loading-container">
-      <Icon icon="lucide:loader-2" class="loading-icon" />
+      <Icon icon="mdi:loading" class="loading-icon" />
       <p>加载中...</p>
     </div>
 
     <div v-else-if="wrongQuestions.length === 0" class="empty-state">
-      <Icon icon="lucide:book-check" class="empty-icon" />
+      <Icon icon="mdi:book-check" class="empty-icon" />
       <h3>暂无错题</h3>
       <p>您的答题表现很好，继续保持！</p>
     </div>
 
     <div v-else>
       <div class="stats-cards">
-        <div class="stat-card card">
-          <div class="stat-icon">
-            <Icon icon="lucide:book-x" />
+        <div class="stat-card">
+          <div class="stat-icon error">
+            <Icon icon="mdi:book-remove" />
           </div>
           <div class="stat-info">
             <span class="stat-value">{{ wrongQuestions.length }}</span>
             <span class="stat-label">错题总数</span>
           </div>
         </div>
-        <div class="stat-card card">
-          <div class="stat-icon">
-            <Icon icon="lucide:repeat" />
+        <div class="stat-card">
+          <div class="stat-icon warning">
+            <Icon icon="mdi:repeat" />
           </div>
           <div class="stat-info">
             <span class="stat-value">{{ repeatedWrongCount }}</span>
@@ -42,20 +42,26 @@
         <div
           v-for="item in wrongQuestions"
           :key="item.wrongId"
-          class="wrong-card card"
+          class="wrong-card"
         >
           <div class="wrong-header">
             <div class="wrong-subject">
-              <Icon icon="lucide:tag" />
+              <Icon icon="mdi:tag" />
               {{ item.subjectName }}
             </div>
             <div class="wrong-count">
-              <Icon icon="lucide:rotate-ccw" />
+              <Icon icon="mdi:reload" />
               错误 {{ item.wrongCount }} 次
             </div>
-            <button class="delete-btn" @click="deleteWrong(item.wrongId)">
-              <Icon icon="lucide:trash-2" />
-            </button>
+            <el-button
+              type="danger"
+              size="small"
+              plain
+              circle
+              @click="deleteWrong(item.wrongId)"
+            >
+              <Icon icon="mdi:delete" />
+            </el-button>
           </div>
 
           <div class="wrong-question">
@@ -84,7 +90,7 @@
               <span class="answer-value">{{ item.correctAnswer }}</span>
             </div>
             <div v-if="item.knowledgePoint" class="knowledge-point">
-              <Icon icon="lucide:lightbulb" />
+              <Icon icon="mdi:lightbulb" />
               <span>{{ item.knowledgePoint }}</span>
             </div>
           </div>
@@ -97,6 +103,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { Icon } from '@iconify/vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import wrongApi from '@/api/wrong.js'
 
 const wrongQuestions = ref([])
@@ -138,33 +145,42 @@ const parseOptions = (optionsStr) => {
 }
 
 const deleteWrong = async (wrongId) => {
-  if (!confirm('确定要删除这道错题吗？')) return
   try {
+    await ElMessageBox.confirm('确定要删除这道错题吗？', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
     await wrongApi.deleteWrongQuestion(wrongId)
     wrongQuestions.value = wrongQuestions.value.filter(q => q.wrongId !== wrongId)
+    ElMessage.success('删除成功')
   } catch (err) {
-    alert(err.message || '删除失败')
+    if (err !== 'cancel') {
+      ElMessage.error(err.message || '删除失败')
+    }
   }
 }
 
 onMounted(fetchWrongQuestions)
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/styles/variables' as *;
+
 .page-header {
-  margin-bottom: 28px;
+  margin-bottom: $spacing-xl;
 }
 
 .page-title {
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 6px;
+  font-size: $font-size-2xl;
+  font-weight: 600;
+  color: $dark;
+  margin-bottom: $spacing-xs;
 }
 
 .page-desc {
-  font-size: 15px;
-  color: var(--text-secondary);
+  font-size: $font-size-md;
+  color: $gray;
 }
 
 .loading-container {
@@ -172,14 +188,13 @@ onMounted(fetchWrongQuestions)
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 80px 20px;
-  color: var(--text-muted);
+  padding: $spacing-2xl;
+  color: $gray;
 }
 
 .loading-icon {
-  width: 40px;
-  height: 40px;
-  margin-bottom: 16px;
+  font-size: 40px;
+  margin-bottom: $spacing-md;
   animation: spin 1s linear infinite;
 }
 
@@ -192,39 +207,42 @@ onMounted(fetchWrongQuestions)
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 80px 20px;
+  padding: $spacing-2xl;
   text-align: center;
 }
 
 .empty-icon {
-  width: 64px;
-  height: 64px;
-  color: var(--success-color);
-  margin-bottom: 20px;
+  font-size: 64px;
+  color: $success;
+  margin-bottom: $spacing-lg;
 }
 
 .empty-state h3 {
-  font-size: 18px;
-  color: var(--text-primary);
-  margin-bottom: 8px;
+  font-size: $font-size-lg;
+  color: $dark;
+  margin-bottom: $spacing-sm;
 }
 
 .empty-state p {
-  color: var(--text-secondary);
+  color: $gray;
 }
 
 .stats-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  margin-bottom: 28px;
+  gap: $spacing-lg;
+  margin-bottom: $spacing-xl;
 }
 
 .stat-card {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 20px;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+  background: $bg-card;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+  border: 1px solid $border-color;
 }
 
 .stat-icon {
@@ -233,10 +251,17 @@ onMounted(fetchWrongQuestions)
   justify-content: center;
   width: 48px;
   height: 48px;
-  border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, var(--error-color), #e07b39);
-  color: white;
+  border-radius: $radius-lg;
   font-size: 24px;
+  color: white;
+
+  &.error {
+    background: linear-gradient(135deg, $error, #ff6b6b);
+  }
+
+  &.warning {
+    background: linear-gradient(135deg, $warning, #ffc107);
+  }
 }
 
 .stat-info {
@@ -247,98 +272,86 @@ onMounted(fetchWrongQuestions)
 .stat-value {
   font-size: 28px;
   font-weight: 700;
-  color: var(--text-primary);
+  color: $dark;
 }
 
 .stat-label {
-  font-size: 14px;
-  color: var(--text-secondary);
+  font-size: $font-size-sm;
+  color: $gray;
 }
 
 .wrong-questions-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: $spacing-lg;
 }
 
 .wrong-card {
-  padding: 20px;
+  background: $bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-xl;
+  box-shadow: $shadow-sm;
+  border: 1px solid $border-color;
 }
 
 .wrong-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-md;
 }
 
 .wrong-subject {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  background: rgba(74, 139, 168, 0.1);
-  border-radius: 4px;
-  font-size: 12px;
-  color: var(--info-color);
+  gap: $spacing-xs;
+  padding: $spacing-xs $spacing-sm;
+  background: rgba($info, 0.1);
+  border-radius: $radius-sm;
+  font-size: $font-size-xs;
+  color: $info;
 }
 
 .wrong-count {
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 12px;
-  color: var(--error-color);
-}
-
-.delete-btn {
-  margin-left: auto;
-  padding: 8px;
-  border: none;
-  background: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  border-radius: var(--radius-sm);
-  transition: all 0.2s;
-}
-
-.delete-btn:hover {
-  background: rgba(209, 90, 90, 0.1);
-  color: var(--error-color);
+  gap: $spacing-xs;
+  font-size: $font-size-xs;
+  color: $error;
 }
 
 .wrong-question {
-  margin-bottom: 16px;
+  margin-bottom: $spacing-md;
 }
 
 .question-type {
   display: inline-block;
   padding: 2px 8px;
-  background: var(--bg-secondary);
-  border-radius: 4px;
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-bottom: 8px;
+  background: $light;
+  border-radius: $radius-sm;
+  font-size: $font-size-xs;
+  color: $gray;
+  margin-bottom: $spacing-sm;
 }
 
 .question-content {
-  font-size: 15px;
-  color: var(--text-primary);
+  font-size: $font-size-md;
+  color: $dark;
   line-height: 1.5;
 }
 
 .options-list {
-  margin-bottom: 16px;
+  margin-bottom: $spacing-md;
 }
 
 .option-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  margin-bottom: 8px;
-  border-radius: var(--radius-sm);
-  background: var(--bg-secondary);
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  margin-bottom: $spacing-xs;
+  border-radius: $radius-sm;
+  background: $light;
 }
 
 .option-key {
@@ -348,61 +361,63 @@ onMounted(fetchWrongQuestions)
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: var(--bg-card);
-  font-size: 12px;
+  background: $bg-card;
+  font-size: $font-size-xs;
   font-weight: 600;
+  color: $dark;
 }
 
 .option-text {
   flex: 1;
-  font-size: 14px;
+  font-size: $font-size-sm;
+  color: $dark;
 }
 
 .wrong-answers {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 14px;
-  background: var(--bg-secondary);
-  border-radius: var(--radius-md);
+  gap: $spacing-sm;
+  padding: $spacing-md;
+  background: $light;
+  border-radius: $radius-md;
 }
 
 .answer-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: $spacing-md;
 }
 
 .answer-label {
-  font-size: 13px;
-  color: var(--text-muted);
+  font-size: $font-size-xs;
+  color: $gray;
   min-width: 70px;
 }
 
 .answer-value {
   font-weight: 500;
-  padding: 4px 10px;
-  border-radius: 4px;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $radius-sm;
 }
 
 .answer-row.wrong .answer-value {
-  background: rgba(209, 90, 90, 0.1);
-  color: var(--error-color);
+  background: rgba($error, 0.1);
+  color: $error;
 }
 
 .answer-row.correct .answer-value {
-  background: rgba(61, 154, 90, 0.1);
-  color: var(--success-color);
+  background: rgba($success, 0.1);
+  color: $success;
 }
 
 .knowledge-point {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid var(--border-color);
-  font-size: 13px;
-  color: var(--warning-color);
+  gap: $spacing-xs;
+  margin-top: $spacing-sm;
+  padding-top: $spacing-sm;
+  border-top: 1px solid $border-color;
+  font-size: $font-size-xs;
+  color: $warning;
 }
 </style>

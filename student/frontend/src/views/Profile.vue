@@ -1,5 +1,5 @@
 <template>
-  <div class="profile-page fade-in">
+  <div class="profile-page">
     <header class="page-header">
       <h1 class="page-title">个人信息</h1>
       <p class="page-desc">管理您的账户信息</p>
@@ -7,9 +7,9 @@
 
     <div class="profile-content">
       <!-- 用户信息卡片 -->
-      <div class="user-card card noise-bg">
+      <div class="user-card">
         <div class="user-avatar">
-          <Icon icon="lucide:user" class="avatar-icon" />
+          <Icon icon="mdi:account" class="avatar-icon" />
         </div>
         <div class="user-info">
           <h2 class="user-name">{{ authStore.user?.realName }}</h2>
@@ -19,7 +19,7 @@
       </div>
 
       <!-- 基本信息 -->
-      <div class="info-section card">
+      <div class="info-section">
         <div class="section-header">
           <h3>基本信息</h3>
         </div>
@@ -52,120 +52,142 @@
       </div>
 
       <!-- 修改密码 -->
-      <div class="password-section card">
+      <div class="password-section">
         <div class="section-header">
           <h3>修改密码</h3>
         </div>
-        <form class="password-form" @submit.prevent="handlePasswordChange">
-          <div class="form-group">
-            <label class="form-label">
-              <Icon icon="lucide:lock" />
-              旧密码
-            </label>
-            <input
-              v-model="passwordForm.oldPassword"
-              type="password"
-              class="input"
-              placeholder="请输入旧密码"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label class="form-label">
-              <Icon icon="lucide:key" />
-              新密码
-            </label>
-            <input
-              v-model="passwordForm.newPassword"
-              type="password"
-              class="input"
-              placeholder="请输入新密码"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label class="form-label">
-              <Icon icon="lucide:check" />
-              确认新密码
-            </label>
-            <input
-              v-model="passwordForm.confirmPassword"
-              type="password"
-              class="input"
-              placeholder="请再次输入新密码"
-              required
-            />
-          </div>
-          <div v-if="passwordError" class="error-message">
-            <Icon icon="lucide:alert-circle" />
-            {{ passwordError }}
-          </div>
-          <div v-if="passwordSuccess" class="success-message">
-            <Icon icon="lucide:check-circle" />
-            {{ passwordSuccess }}
-          </div>
-          <button type="submit" class="btn btn-primary" :disabled="passwordLoading">
-            <Icon v-if="passwordLoading" icon="lucide:loader-2" class="loading" />
-            <Icon v-else icon="lucide:save" />
-            {{ passwordLoading ? '修改中...' : '修改密码' }}
-          </button>
-        </form>
+        <el-form
+          ref="passwordFormRef"
+          :model="passwordForm"
+          :rules="passwordRules"
+          class="password-form"
+          @submit.prevent="handlePasswordChange"
+        >
+          <el-form-item prop="oldPassword">
+            <div class="input-wrapper">
+              <Icon icon="mdi:lock" class="input-icon" />
+              <el-input
+                v-model="passwordForm.oldPassword"
+                type="password"
+                placeholder="请输入旧密码"
+                size="large"
+                class="custom-input"
+                show-password
+              />
+            </div>
+          </el-form-item>
+
+          <el-form-item prop="newPassword">
+            <div class="input-wrapper">
+              <Icon icon="mdi:key" class="input-icon" />
+              <el-input
+                v-model="passwordForm.newPassword"
+                type="password"
+                placeholder="请输入新密码"
+                size="large"
+                class="custom-input"
+                show-password
+              />
+            </div>
+          </el-form-item>
+
+          <el-form-item prop="confirmPassword">
+            <div class="input-wrapper">
+              <Icon icon="mdi:check-circle" class="input-icon" />
+              <el-input
+                v-model="passwordForm.confirmPassword"
+                type="password"
+                placeholder="请再次输入新密码"
+                size="large"
+                class="custom-input"
+                show-password
+              />
+            </div>
+          </el-form-item>
+
+          <el-form-item>
+            <el-button
+              type="primary"
+              size="large"
+              class="submit-btn"
+              :loading="passwordLoading"
+              @click="handlePasswordChange"
+            >
+              <Icon icon="mdi:content-save" />
+              {{ passwordLoading ? '修改中...' : '修改密码' }}
+            </el-button>
+          </el-form-item>
+        </el-form>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
 import { useAuthStore } from '@/stores/auth.js'
+import { ElMessage } from 'element-plus'
 
 const router = useRouter()
 const authStore = useAuthStore()
 
-const passwordForm = ref({
+const passwordFormRef = ref(null)
+
+const passwordForm = reactive({
   oldPassword: '',
   newPassword: '',
   confirmPassword: ''
 })
 
-const passwordError = ref('')
-const passwordSuccess = ref('')
+const passwordRules = {
+  oldPassword: [
+    { required: true, message: '请输入旧密码', trigger: 'blur' }
+  ],
+  newPassword: [
+    { required: true, message: '请输入新密码', trigger: 'blur' },
+    { min: 6, message: '密码长度不能少于6位', trigger: 'blur' }
+  ],
+  confirmPassword: [
+    { required: true, message: '请再次输入新密码', trigger: 'blur' },
+    {
+      validator: (rule, value, callback) => {
+        if (value !== passwordForm.newPassword) {
+          callback(new Error('两次输入的新密码不一致'))
+        } else {
+          callback()
+        }
+      },
+      trigger: 'blur'
+    }
+  ]
+}
+
 const passwordLoading = ref(false)
 
 const handlePasswordChange = async () => {
-  passwordError.value = ''
-  passwordSuccess.value = ''
+  if (!passwordFormRef.value) return
 
-  if (passwordForm.value.newPassword !== passwordForm.value.confirmPassword) {
-    passwordError.value = '两次输入的新密码不一致'
-    return
-  }
+  await passwordFormRef.value.validate(async (valid) => {
+    if (!valid) return
 
-  if (passwordForm.value.newPassword.length < 6) {
-    passwordError.value = '新密码长度不能少于6位'
-    return
-  }
-
-  passwordLoading.value = true
-  try {
-    await authStore.updatePassword({
-      oldPassword: passwordForm.value.oldPassword,
-      newPassword: passwordForm.value.newPassword
-    })
-    passwordSuccess.value = '密码修改成功'
-    passwordForm.value = { oldPassword: '', newPassword: '', confirmPassword: '' }
-  } catch (err) {
-    passwordError.value = err.response?.data?.message || '密码修改失败'
-  } finally {
-    passwordLoading.value = false
-  }
-}
-
-const handleLogout = () => {
-  authStore.logout()
-  router.push('/login')
+    passwordLoading.value = true
+    try {
+      await authStore.updatePassword({
+        oldPassword: passwordForm.oldPassword,
+        newPassword: passwordForm.newPassword
+      })
+      ElMessage.success('密码修改成功')
+      passwordForm.oldPassword = ''
+      passwordForm.newPassword = ''
+      passwordForm.confirmPassword = ''
+    } catch (err) {
+      ElMessage.error(err.response?.data?.message || '密码修改失败')
+    } finally {
+      passwordLoading.value = false
+    }
+  })
 }
 
 onMounted(async () => {
@@ -175,35 +197,40 @@ onMounted(async () => {
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/styles/variables' as *;
+
 .page-header {
-  margin-bottom: 28px;
+  margin-bottom: $spacing-xl;
 }
 
 .page-title {
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 6px;
+  font-size: $font-size-2xl;
+  font-weight: 600;
+  color: $dark;
+  margin-bottom: $spacing-xs;
 }
 
 .page-desc {
-  font-size: 15px;
-  color: var(--text-secondary);
+  font-size: $font-size-md;
+  color: $gray;
 }
 
 .profile-content {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: $spacing-xl;
 }
 
 .user-card {
   display: flex;
   align-items: center;
-  gap: 24px;
-  padding: 28px;
-  background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+  gap: $spacing-xl;
+  padding: $spacing-xl;
+  background: $bg-card;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+  border: 1px solid $border-color;
 }
 
 .user-avatar {
@@ -212,13 +239,12 @@ onMounted(async () => {
   justify-content: center;
   width: 80px;
   height: 80px;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+  background: linear-gradient(135deg, $accent, $accent-dark);
   border-radius: 50%;
 }
 
 .avatar-icon {
-  width: 40px;
-  height: 40px;
+  font-size: 40px;
   color: white;
 }
 
@@ -231,116 +257,112 @@ onMounted(async () => {
 .user-name {
   font-size: 22px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: $dark;
 }
 
 .user-id {
-  font-size: 14px;
-  color: var(--text-secondary);
+  font-size: $font-size-sm;
+  color: $gray;
 }
 
 .user-class {
-  font-size: 14px;
-  color: var(--primary-color);
+  font-size: $font-size-sm;
+  color: $accent;
   font-weight: 500;
 }
 
-.info-section {
+.info-section,
+.password-section {
+  background: $bg-card;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+  border: 1px solid $border-color;
   overflow: hidden;
 }
 
 .section-header {
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--border-color);
-  background: linear-gradient(90deg, var(--bg-secondary) 0%, transparent 100%);
-}
+  padding: $spacing-lg;
+  border-bottom: 1px solid $border-color;
+  background: linear-gradient(90deg, $light 0%, transparent 100%);
 
-.section-header h3 {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text-primary);
+  h3 {
+    font-size: $font-size-md;
+    font-weight: 600;
+    color: $dark;
+  }
 }
 
 .info-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  padding: 24px;
+  gap: $spacing-lg;
+  padding: $spacing-xl;
 }
 
 .info-item {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 16px;
-  background: var(--bg-secondary);
-  border-radius: var(--radius-md);
+  padding: $spacing-md;
+  background: $light;
+  border-radius: $radius-md;
 }
 
 .info-label {
-  font-size: 13px;
-  color: var(--text-muted);
+  font-size: $font-size-xs;
+  color: $gray;
 }
 
 .info-value {
-  font-size: 15px;
+  font-size: $font-size-md;
   font-weight: 500;
-  color: var(--text-primary);
-}
-
-.password-section {
-  overflow: hidden;
+  color: $dark;
 }
 
 .password-form {
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  padding: $spacing-xl;
 }
 
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.form-label {
+.input-wrapper {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-secondary);
 }
 
-.error-message {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 16px;
-  background: rgba(209, 90, 90, 0.08);
-  color: var(--error-color);
-  border-radius: var(--radius-md);
-  font-size: 14px;
+.input-icon {
+  position: absolute;
+  left: $spacing-md;
+  font-size: 20px;
+  color: $gray;
+  z-index: 1;
 }
 
-.success-message {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 16px;
-  background: rgba(61, 154, 90, 0.08);
-  color: var(--success-color);
-  border-radius: var(--radius-md);
-  font-size: 14px;
+.custom-input {
+  :deep(.el-input__wrapper) {
+    padding-left: 44px;
+    border-radius: $radius-md;
+    background: $light;
+    border: 1px solid transparent;
+    box-shadow: none;
+    transition: all $ease-smooth 0.2s;
+
+    &:hover, &:focus-within {
+      border-color: $accent;
+      background: $white;
+    }
+  }
+
+  :deep(.el-input__inner) {
+    color: $dark;
+    font-size: $font-size-md;
+
+    &::placeholder {
+      color: $gray-light;
+    }
+  }
 }
 
-.loading {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
+.submit-btn {
+  width: 100%;
 }
 </style>

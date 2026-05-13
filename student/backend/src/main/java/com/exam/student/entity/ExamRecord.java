@@ -24,8 +24,8 @@ public class ExamRecord {
     private String examName;
     private String paperName;
     private Integer duration;
-    private Integer totalScoreOfPaper;
-    private Integer passScore;
+    private Double totalScoreOfPaper;
+    private Double passScore;
     private LocalDateTime startTimeOfExam;
     private LocalDateTime endTimeOfExam;
 }
