@@ -4,7 +4,7 @@
     <div class="main-container" :class="{ 'sidebar-collapsed': collapsed }">
       <Header @toggle="toggleSidebar" :collapsed="collapsed" />
       <main class="content-area">
-        <div class="content-wrapper animate-fade-in">
+        <div class="content-wrapper fade-in">
           <router-view />
         </div>
       </main>
@@ -32,7 +32,7 @@ const toggleSidebar = () => {
   width: 100%;
   height: 100vh;
   position: relative;
-  background: $white-bright;
+  background: $bg-primary;
 }
 
 .main-container {
@@ -41,7 +41,7 @@ const toggleSidebar = () => {
   flex-direction: column;
   margin-left: 240px;
   transition: margin-left $transition-normal $ease-minimal;
-  background: $white-bright;
+  background: $bg-primary;
 
   &.sidebar-collapsed {
     margin-left: 72px;
@@ -54,6 +54,7 @@ const toggleSidebar = () => {
   overflow-y: auto;
   overflow-x: hidden;
   position: relative;
+  background: $bg-secondary;
 }
 
 .content-wrapper {

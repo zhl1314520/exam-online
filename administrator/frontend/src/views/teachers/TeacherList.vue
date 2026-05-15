@@ -351,7 +351,7 @@ onMounted(() => {
   padding: $spacing-lg;
   background: $bg-card;
   border-radius: $radius-lg;
-  border: $border-width solid $border-color;
+  border: $border-width solid #E2E8F0;
 }
 
 .search-input {
@@ -380,7 +380,7 @@ onMounted(() => {
   padding: $spacing-lg;
   background: $bg-card;
   border-radius: $radius-lg;
-  border: $border-width solid $border-color;
+  border: $border-width solid #E2E8F0;
 }
 
 .add-btn, .export-btn {
@@ -400,7 +400,7 @@ onMounted(() => {
   background: $bg-card;
   border-radius: $radius-lg;
   padding: $spacing-xl;
-  border: $border-width solid $border-color;
+  border: $border-width solid #E2E8F0;
 }
 
 .custom-table {
@@ -434,13 +434,13 @@ onMounted(() => {
     transition: background $transition-fast;
 
     &:hover > td {
-      background: rgba($accent, 0.02) !important;
+      background: rgba($primary-color, 0.02) !important;
     }
   }
 }
 
 .title-tag {
-  color: $gray;
+  color: #6A6A6A;
   font-size: $font-size-sm;
   font-weight: $font-weight-medium;
 }
@@ -450,13 +450,13 @@ onMounted(() => {
   justify-content: flex-end;
   margin-top: $spacing-xl;
   padding-top: $spacing-lg;
-  border-top: $border-width solid $border-color;
+  border-top: $border-width solid #E2E8F0;
 }
 
 .custom-dialog {
   :deep(.el-dialog__header) {
     background: $bg-sidebar;
-    color: $white-bright;
+    color: #FFFFFF;
     padding: $spacing-lg $spacing-xl;
     border-bottom: none;
   }
@@ -464,7 +464,7 @@ onMounted(() => {
   :deep(.el-dialog__title) {
     font-size: $font-size-lg;
     font-weight: $font-weight-semibold;
-    color: $white-bright;
+    color: #FFFFFF;
   }
 
   :deep(.el-dialog__body) {
@@ -478,8 +478,8 @@ onMounted(() => {
   }
 
   :deep(.el-radio__input.is-checked .el-radio__inner) {
-    border-color: $accent;
-    background: $accent;
+    border-color: $primary-color;
+    background: $primary-color;
   }
 }
 
@@ -488,20 +488,20 @@ onMounted(() => {
   padding: $spacing-xs $spacing-sm;
 
   &.el-button--primary {
-    color: $accent;
+    color: $primary-color;
 
     &:hover {
-      color: $accent-light;
-      background: rgba($accent, 0.04);
+      color: $primary-color-light;
+      background: rgba($primary-color, 0.04);
     }
   }
 
   &.el-button--danger {
-    color: $error;
+    color: $danger-color;
 
     &:hover {
-      color: lighten($error, 10%);
-      background: rgba($error, 0.04);
+      color: lighten($danger-color, 10%);
+      background: rgba($danger-color, 0.04);
     }
   }
 

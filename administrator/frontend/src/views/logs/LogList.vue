@@ -283,7 +283,7 @@ onMounted(() => {
   padding: $spacing-lg;
   background: $bg-card;
   border-radius: $radius-lg;
-  border: $border-width solid $border-color;
+  border: $border-width solid #E2E8F0;
 }
 
 .search-select {
@@ -309,7 +309,7 @@ onMounted(() => {
   background: $bg-card;
   border-radius: $radius-lg;
   padding: $spacing-xl;
-  border: $border-width solid $border-color;
+  border: $border-width solid #E2E8F0;
 }
 
 .custom-table {
@@ -343,7 +343,7 @@ onMounted(() => {
     transition: background $transition-fast;
 
     &:hover > td {
-      background: rgba($accent, 0.02) !important;
+      background: rgba($primary-color, 0.02) !important;
     }
   }
 }
@@ -355,33 +355,33 @@ onMounted(() => {
   font-weight: $font-weight-medium;
 
   &.operation-login {
-    background: rgba($success, 0.08);
-    color: $success;
+    background: rgba($success-color, 0.08);
+    color: $success-color;
   }
 
   &.operation-add {
-    background: rgba($accent, 0.08);
-    color: $accent;
+    background: rgba($primary-color, 0.08);
+    color: $primary-color;
   }
 
   &.operation-edit {
-    background: rgba($warning, 0.08);
-    color: $warning;
+    background: rgba($warning-color, 0.08);
+    color: $warning-color;
   }
 
   &.operation-delete {
-    background: rgba($error, 0.08);
-    color: $error;
+    background: rgba($danger-color, 0.08);
+    color: $danger-color;
   }
 
   &.operation-view {
-    background: rgba($info, 0.08);
-    color: $info;
+    background: rgba($info-color, 0.08);
+    color: $info-color;
   }
 
   &.operation-default {
     background: rgba($black, 0.04);
-    color: $gray;
+    color: #6A6A6A;
   }
 }
 
@@ -390,13 +390,13 @@ onMounted(() => {
   justify-content: flex-end;
   margin-top: $spacing-xl;
   padding-top: $spacing-lg;
-  border-top: $border-width solid $border-color;
+  border-top: $border-width solid #E2E8F0;
 }
 
 .custom-dialog {
   :deep(.el-dialog__header) {
     background: $bg-sidebar;
-    color: $white-bright;
+    color: #FFFFFF;
     padding: $spacing-lg $spacing-xl;
     border-bottom: none;
   }
@@ -404,7 +404,7 @@ onMounted(() => {
   :deep(.el-dialog__title) {
     font-size: $font-size-lg;
     font-weight: $font-weight-semibold;
-    color: $white-bright;
+    color: #FFFFFF;
   }
 
   :deep(.el-dialog__body) {
@@ -420,7 +420,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   padding: $spacing-md 0;
-  border-bottom: $border-width solid $border-color;
+  border-bottom: $border-width solid #E2E8F0;
 
   &:last-child {
     border-bottom: none;
@@ -429,7 +429,7 @@ onMounted(() => {
 
 .detail-label {
   font-size: $font-size-sm;
-  color: $gray;
+  color: #6A6A6A;
   width: 100px;
   font-weight: $font-weight-medium;
 }
@@ -442,11 +442,11 @@ onMounted(() => {
 :deep(.el-button--text) {
   font-weight: $font-weight-medium;
   padding: $spacing-xs $spacing-sm;
-  color: $accent;
+  color: $primary-color;
 
   &:hover {
-    color: $accent-light;
-    background: rgba($accent, 0.04);
+    color: $primary-color-light;
+    background: rgba($primary-color, 0.04);
   }
 
   .iconify {

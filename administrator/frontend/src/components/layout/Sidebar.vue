@@ -76,7 +76,7 @@ const navigateTo = (path) => {
 .sidebar {
   width: 240px;
   height: 100vh;
-  background: $bg-sidebar;
+  background: $bg-primary;
   position: fixed;
   left: 0;
   top: 0;
@@ -84,7 +84,7 @@ const navigateTo = (path) => {
   flex-direction: column;
   transition: width $transition-normal $ease-minimal;
   z-index: 100;
-  border-right: $border-width solid rgba($white-bright, 0.08);
+  border-right: $border-width solid $border-base;
 
   &.sidebar-collapsed {
     width: 72px;
@@ -105,7 +105,7 @@ const navigateTo = (path) => {
 
 .sidebar-header {
   padding: $spacing-xl $spacing-lg;
-  border-bottom: $border-width solid $border-color-dark;
+  border-bottom: $border-width solid $border-base;
 }
 
 .logo-area {
@@ -118,7 +118,7 @@ const navigateTo = (path) => {
   width: 40px;
   height: 40px;
   border-radius: $radius-md;
-  background: $accent;
+  background: $primary-color;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -127,7 +127,7 @@ const navigateTo = (path) => {
 
 .logo-icon {
   font-size: 24px;
-  color: $white-bright;
+  color: $bg-primary;
 }
 
 .logo-content {
@@ -139,7 +139,7 @@ const navigateTo = (path) => {
 .logo-text {
   font-size: $font-size-lg;
   font-weight: $font-weight-semibold;
-  color: $white-bright;
+  color: $bg-primary;
   letter-spacing: 0.02em;
 }
 
@@ -169,23 +169,22 @@ const navigateTo = (path) => {
   position: relative;
 
   &:hover {
-    color: $white-bright;
-    background: rgba($white-bright, 0.04);
+    color: $text-primary;
+    background: $bg-tertiary;
 
     .nav-icon-wrapper {
-      background: rgba($white-bright, 0.08);
+      background: rgba($primary-color, 0.1);
     }
   }
 
   &.active {
-    color: $accent;
-    background: rgba($accent, 0.08);
+    color: $primary-color;
 
     .nav-icon-wrapper {
-      background: $accent;
+      background: $primary-color;
 
       .nav-icon {
-        color: $white-bright;
+        color: $bg-primary;
       }
     }
 
@@ -226,12 +225,12 @@ const navigateTo = (path) => {
   width: 4px;
   height: 4px;
   border-radius: $radius-full;
-  background: $accent;
+  background: $primary-color;
 }
 
 .sidebar-footer {
   padding: $spacing-md;
-  border-top: $border-width solid $border-color-dark;
+  border-top: $border-width solid $border-base;
 }
 
 .collapse-btn {
@@ -241,15 +240,15 @@ const navigateTo = (path) => {
   align-items: center;
   justify-content: center;
   border-radius: $radius-md;
-  background: rgba($white-bright, 0.04);
+  background: $bg-tertiary;
   color: $gray-light;
   cursor: pointer;
   transition: all $transition-fast;
   font-size: 20px;
 
   &:hover {
-    background: rgba($white-bright, 0.08);
-    color: $white-bright;
+    background: rgba($primary-color, 0.1);
+    color: $text-primary;
   }
 }
 
@@ -259,7 +258,7 @@ const navigateTo = (path) => {
 }
 
 .sidebar-nav::-webkit-scrollbar-thumb {
-  background: rgba($white-bright, 0.16);
+  background: #CBD5E1;
   border-radius: $radius-full;
 }
 </style>

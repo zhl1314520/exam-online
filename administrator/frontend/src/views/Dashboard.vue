@@ -583,7 +583,7 @@ onMounted(() => {
   }
 
   &.log-danger {
-    color: $error;
+    color: $danger-color;
   }
 
   &.log-info {

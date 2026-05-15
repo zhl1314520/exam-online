@@ -172,9 +172,9 @@ const handleLogin = async () => {
   inset: 0;
   background: linear-gradient(
     135deg,
-    rgba($accent, 0.05) 0%,
-    rgba($accent, 0.08) 50%,
-    rgba($accent-light, 0.03) 100%
+    rgba($primary-color, 0.05) 0%,
+    rgba($primary-color, 0.08) 50%,
+    rgba(#60A5FA, 0.03) 100%
   );
   z-index: 0;
 }
@@ -205,7 +205,7 @@ const handleLogin = async () => {
   background: $bg-card;
   border-radius: $radius-xl;
   padding: $spacing-xl;
-  box-shadow: $shadow-xl;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
   position: relative;
 
   &::before {
@@ -215,7 +215,7 @@ const handleLogin = async () => {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, $accent, $accent);
+    background: linear-gradient(90deg, $primary-color, $primary-color);
     border-radius: $radius-xl $radius-xl 0 0;
   }
 }
@@ -228,20 +228,20 @@ const handleLogin = async () => {
 
 .logo-icon {
   font-size: 48px;
-  color: $accent;
+  color: $primary-color;
   margin-bottom: $spacing-md;
 }
 
 .logo-text {
   font-size: $font-size-2xl;
   font-weight: 600;
-  color: $dark;
+  color: #1E293B;
   margin-bottom: $spacing-xs;
 }
 
 .logo-subtitle {
   font-size: $font-size-sm;
-  color: $gray;
+  color: #6A6A6A;
 }
 
 // 表单区域
@@ -259,7 +259,7 @@ const handleLogin = async () => {
   position: absolute;
   left: $spacing-md;
   font-size: 20px;
-  color: $gray;
+  color: #6A6A6A;
   z-index: 1;
 }
 
@@ -267,23 +267,23 @@ const handleLogin = async () => {
   :deep(.el-input__wrapper) {
     padding-left: 44px;
     border-radius: $radius-md;
-    background: $light;
+    background: #E5E5E5;
     border: 1px solid transparent;
     box-shadow: none;
     transition: all $ease-smooth 0.2s;
 
     &:hover, &:focus-within {
-      border-color: $accent;
-      background: $white;
+      border-color: $primary-color;
+      background: #FFFFFF;
     }
   }
 
   :deep(.el-input__inner) {
-    color: $dark;
+    color: #1E293B;
     font-size: $font-size-md;
 
     &::placeholder {
-      color: $gray-light;
+      color: #6A6A6A-light;
     }
   }
 }
@@ -293,7 +293,7 @@ const handleLogin = async () => {
   width: 100%;
   height: 48px;
   border-radius: $radius-md;
-  background: linear-gradient(135deg, $accent 0%, $accent-dark 100%);
+  background: linear-gradient(135deg, $primary-color 0%, #2563EB 100%);
   border: none;
   font-size: $font-size-md;
   font-weight: 500;
@@ -305,7 +305,7 @@ const handleLogin = async () => {
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba($accent, 0.3);
+    box-shadow: 0 8px 20px rgba($primary-color, 0.3);
   }
 
   &:active {
@@ -328,12 +328,12 @@ const handleLogin = async () => {
   justify-content: center;
   gap: $spacing-sm;
   font-size: $font-size-xs;
-  color: $gray;
+  color: #6A6A6A;
 }
 
 .shield-icon {
   font-size: 16px;
-  color: $success;
+  color: #10B981;
 }
 
 // 右侧装饰区域
@@ -351,7 +351,7 @@ const handleLogin = async () => {
   &.circle-1 {
     width: 200px;
     height: 200px;
-    background: linear-gradient(135deg, rgba($accent, 0.2), rgba($accent, 0.1));
+    background: linear-gradient(135deg, rgba($primary-color, 0.2), rgba($primary-color, 0.1));
     top: -50px;
     right: 100px;
   }
@@ -359,7 +359,7 @@ const handleLogin = async () => {
   &.circle-2 {
     width: 120px;
     height: 120px;
-    background: linear-gradient(135deg, rgba($accent, 0.3), rgba($accent-light, 0.15));
+    background: linear-gradient(135deg, rgba($primary-color, 0.3), rgba(#60A5FA, 0.15));
     bottom: 100px;
     right: 200px;
   }
@@ -367,7 +367,7 @@ const handleLogin = async () => {
   &.circle-3 {
     width: 80px;
     height: 80px;
-    background: rgba($accent, 0.25);
+    background: rgba($primary-color, 0.25);
     top: 150px;
     right: 50px;
   }
@@ -379,7 +379,7 @@ const handleLogin = async () => {
   flex-direction: column;
   gap: $spacing-lg;
   padding: $spacing-xl;
-  background: rgba($white, 0.8);
+  background: rgba(#FFFFFF, 0.8);
   border-radius: $radius-lg;
   backdrop-filter: blur(10px);
 }
@@ -392,18 +392,18 @@ const handleLogin = async () => {
 
 .stat-icon {
   font-size: 28px;
-  color: $accent;
+  color: $primary-color;
 }
 
 .stat-value {
   font-size: $font-size-xl;
   font-weight: 600;
-  color: $dark;
+  color: #1E293B;
 }
 
 .stat-label {
   font-size: $font-size-sm;
-  color: $gray;
+  color: #6A6A6A;
 }
 
 // 动画

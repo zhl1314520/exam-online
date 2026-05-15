@@ -97,7 +97,7 @@ const handleCommand = (command) => {
 .header {
   height: 64px;
   background: $bg-card;
-  border-bottom: $border-width solid $border-color;
+  border-bottom: $border-width solid $border-base;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -126,7 +126,7 @@ const handleCommand = (command) => {
   font-size: 20px;
 
   &:hover {
-    color: $dark;
+    color: $text-primary;
     background: rgba($black, 0.04);
   }
 }
@@ -180,7 +180,7 @@ const handleCommand = (command) => {
   width: 36px;
   height: 36px;
   border-radius: $radius-md;
-  background: $accent;
+  background: $primary-color;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -188,7 +188,7 @@ const handleCommand = (command) => {
 
 .avatar-icon {
   font-size: 20px;
-  color: $white-bright;
+  color: $bg-primary;
 }
 
 .admin-details {
@@ -239,11 +239,11 @@ const handleCommand = (command) => {
 }
 
 .logout-icon {
-  color: $error;
+  color: $danger-color;
 }
 
 .logout-text {
-  color: $error;
+  color: $danger-color;
   font-weight: $font-weight-medium;
 }
 
@@ -257,11 +257,11 @@ const handleCommand = (command) => {
     transition: all $transition-fast;
 
     &:hover {
-      background: rgba($accent, 0.04);
-      color: $accent;
+      background: rgba($primary-color, 0.04);
+      color: $primary-color;
 
       .dropdown-icon {
-        color: $accent;
+        color: $primary-color;
       }
     }
   }

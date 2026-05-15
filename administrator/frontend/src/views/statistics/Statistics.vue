@@ -293,7 +293,7 @@ onMounted(() => {
   background: $bg-card;
   border-radius: $radius-lg;
   padding: $spacing-xl;
-  border: $border-width solid $border-color;
+  border: $border-width solid #E2E8F0;
   display: flex;
   align-items: center;
   gap: $spacing-lg;
@@ -321,19 +321,19 @@ onMounted(() => {
   background: rgba($black, 0.03);
 
   &.primary {
-    color: $accent;
+    color: $primary-color;
   }
 
   &.accent {
-    color: $success;
+    color: $success-color;
   }
 
   &.success {
-    color: $info;
+    color: $info-color;
   }
 
   &.info {
-    color: $warning;
+    color: $warning-color;
   }
 }
 
@@ -353,7 +353,7 @@ onMounted(() => {
 
 .stat-label {
   font-size: $font-size-sm;
-  color: $gray;
+  color: #6A6A6A;
   font-weight: $font-weight-medium;
 }
 
@@ -367,7 +367,7 @@ onMounted(() => {
   background: $bg-card;
   border-radius: $radius-lg;
   padding: $spacing-xl;
-  border: $border-width solid $border-color;
+  border: $border-width solid #E2E8F0;
   transition: all $transition-normal $ease-minimal;
 
   &:hover {
@@ -379,7 +379,7 @@ onMounted(() => {
 .card-header {
   margin-bottom: $spacing-lg;
   padding-bottom: $spacing-md;
-  border-bottom: $border-width solid $border-color;
+  border-bottom: $border-width solid #E2E8F0;
 }
 
 .card-title {
@@ -394,7 +394,7 @@ onMounted(() => {
 
 .title-icon {
   font-size: 22px;
-  color: $accent;
+  color: $primary-color;
 }
 
 .chart-wrapper {
@@ -405,7 +405,7 @@ onMounted(() => {
   background: $bg-card;
   border-radius: $radius-lg;
   padding: $spacing-xl;
-  border: $border-width solid $border-color;
+  border: $border-width solid #E2E8F0;
 }
 
 .custom-table {
@@ -439,7 +439,7 @@ onMounted(() => {
     transition: background $transition-fast;
 
     &:hover > td {
-      background: rgba($accent, 0.02) !important;
+      background: rgba($primary-color, 0.02) !important;
     }
   }
 }

@@ -1,25 +1,26 @@
 @use 'variables' as *;
 
-// Element Plus 主题覆盖 - 极简主义
+// Element Plus 主题覆盖 - 白色系主题
 :root {
-  --el-color-primary: #{$accent};
-  --el-color-primary-light-3: #{$accent-light};
-  --el-color-primary-light-5: #{$accent-dark};
-  --el-color-primary-light-7: #{mix($accent, $white-bright, 70%)};
-  --el-color-primary-light-8: #{mix($accent, $white-bright, 80%)};
-  --el-color-primary-light-9: #{mix($accent, $white-bright, 90%)};
+  --el-color-primary: #{$primary-color};
+  --el-color-primary-light-3: #{mix($primary-color, $bg-primary, 70%)};
+  --el-color-primary-light-5: #{mix($primary-color, $bg-primary, 50%)};
+  --el-color-primary-light-7: #{mix($primary-color, $bg-primary, 30%)};
+  --el-color-primary-light-8: #{mix($primary-color, $bg-primary, 20%)};
+  --el-color-primary-light-9: #{mix($primary-color, $bg-primary, 10%)};
 
-  --el-color-warning: #{$warning};
-  --el-color-warning-light-3: #{mix($warning, $white-bright, 70%)};
-  --el-color-warning-light-5: #{mix($warning, $white-bright, 50%)};
+  --el-color-success: #{$success-color};
+  --el-color-warning: #{$warning-color};
+  --el-color-danger: #{$danger-color};
+  --el-color-info: #{$info-color};
 
-  --el-font-family: #{$font-family};
+  --el-font-family: #{$font-sans};
   --el-border-radius-small: #{$radius-sm};
   --el-border-radius-base: #{$radius-md};
   --el-border-radius-large: #{$radius-lg};
 }
 
-// 全局样式 - 极简主义
+// 全局样式 - 白色系主题
 * {
   margin: 0;
   padding: 0;
@@ -29,11 +30,11 @@
 html, body {
   width: 100%;
   height: 100%;
-  font-family: $font-family;
-  font-size: $font-size-md;
-  font-weight: $font-weight-normal;
-  color: $black;
-  background: $white-bright;
+  font-family: $font-sans;
+  font-size: 14px;
+  font-weight: 400;
+  color: $text-primary;
+  background: $bg-primary;
   position: relative;
   overflow-x: hidden;
   line-height: 1.5;
@@ -43,122 +44,200 @@ html, body {
 #app {
   position: relative;
   z-index: 1;
-  background: $white-bright;
+  background: $bg-primary;
 }
 
-// 滚动条 - 极简风格
+// Iconify icons
+.iconify {
+  font-size: 20px;
+  color: inherit;
+}
+
+// 滚动条 - 浅色主题
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: $bg-secondary;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: $gray;
-  border-radius: $radius-full;
-  transition: background $transition-fast;
-
-  &:hover {
-    background: $gray-dark;
-  }
+  background: #CBD5E1;
+  border-radius: 4px;
 }
 
-// 动画类 - 极简微妙
-.animate-fade-in {
-  animation: fadeIn $transition-normal $ease-minimal forwards;
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
 }
 
-.animate-slide-up {
-  animation: slideUp $transition-normal $ease-minimal forwards;
+// 按钮基础样式
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: $radius-md;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all $transition-fast;
+  border: none;
+  font-family: inherit;
 }
 
-.animate-slide-left {
-  animation: slideLeft $transition-normal $ease-minimal forwards;
+.btn-secondary {
+  background: $bg-tertiary;
+  color: $text-primary;
+  border: 1px solid $border-base;
 }
 
-.animate-scale-in {
-  animation: scaleIn $transition-fast $ease-minimal forwards;
+.btn-secondary:hover {
+  background: $bg-secondary;
+  border-color: $border-dark;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+  color: $bg-primary;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+}
+
+// 输入框基础样式
+.input {
+  width: 100%;
+  padding: 14px 20px;
+  background: $bg-card;
+  border: 1px solid $border-base;
+  border-radius: $radius-lg;
+  font-size: 14px;
+  color: $text-primary;
+  font-family: inherit;
+  transition: all $transition-fast;
+}
+
+.input::placeholder {
+  color: $text-muted;
+}
+
+.input:focus {
+  outline: none;
+  border-color: $accent-sky;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+}
+
+// 卡片基础样式
+.card {
+  background: $bg-card;
+  border: 1px solid $border-base;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 5%), 0 1px 2px -1px rgb(0 0 0 / 5%);
+}
+
+// 面板头部样式
+.panel-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid $border-base;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.panel-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: $text-primary;
+}
+
+.panel-content {
+  padding: 24px;
+}
+
+// 标签样式
+.tag {
+  padding: 4px 10px;
+  background: $bg-tertiary;
+  border-radius: 6px;
+  font-size: 12px;
+  color: $text-muted;
+}
+
+// 状态标签
+.status-tag {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.status-success {
+  background: rgba($success-color, 0.1);
+  color: #059669;
+}
+
+.status-warning {
+  background: rgba($warning-color, 0.1);
+  color: #D97706;
+}
+
+.status-error {
+  background: rgba($danger-color, 0.1);
+  color: #DC2626;
+}
+
+.status-info {
+  background: rgba($info-color, 0.1);
+  color: #0284C7;
+}
+
+// 等宽字体
+.mono {
+  font-family: $font-mono;
+}
+
+// 加载动画
+.loading {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+// 淡入动画
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+// 动画类
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+  opacity: 0;
 }
 
-@keyframes slideLeft {
-  from {
-    opacity: 0;
-    transform: translateX(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-// 卡片样式 - 极简白卡片
-.card {
-  background: $bg-card;
-  border-radius: $radius-lg;
-  box-shadow: $shadow-sm;
-  border: $border-width solid $border-color;
-  padding: $spacing-lg;
-  transition: all $transition-normal $ease-minimal;
-
-  &:hover {
-    box-shadow: $shadow-md;
-    border-color: rgba($black, 0.1);
-  }
-}
-
-// 极简布局辅助类
-.layout-minimal {
-  display: grid;
-  gap: $spacing-lg;
-}
-
-.layout-asymmetric {
-  display: grid;
-  grid-template-columns: 1fr 2.5fr;
-  gap: $spacing-xl;
-}
-
-// Element Plus 组件样式覆盖 - 极简主题
-.el-button--primary {
-  background-color: $accent !important;
-  border-color: $accent !important;
-  font-weight: $font-weight-medium !important;
+// Element Plus 组件样式覆盖
+:deep(.el-button--primary) {
+  background-color: $primary-color !important;
+  border-color: $primary-color !important;
+  font-weight: 500 !important;
   letter-spacing: 0.02em !important;
 
   &:hover {
-    background-color: $accent-light !important;
-    border-color: $accent-light !important;
-    box-shadow: $shadow-accent !important;
+    background-color: #60A5FA !important;
+    border-color: #60A5FA !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
     transform: translateY(-1px);
   }
 
@@ -167,95 +246,117 @@ html, body {
   }
 }
 
-.el-button--default {
+:deep(.el-button--default) {
   background-color: $bg-card !important;
-  border-color: $border-color !important;
-  color: $dark !important;
-  font-weight: $font-weight-medium !important;
+  border-color: $border-base !important;
+  color: $text-primary !important;
+  font-weight: 500 !important;
 
   &:hover {
-    background-color: $light !important;
-    border-color: rgba($black, 0.1) !important;
-    color: $black !important;
+    background-color: $bg-tertiary !important;
+    border-color: $border-dark !important;
+    color: $text-primary !important;
   }
 }
 
-.el-tag--primary {
-  background-color: rgba($accent, 0.1) !important;
-  border-color: rgba($accent, 0.15) !important;
-  color: $accent !important;
-  font-weight: $font-weight-medium !important;
+:deep(.el-tag--primary) {
+  background-color: rgba($primary-color, 0.1) !important;
+  border-color: rgba($primary-color, 0.15) !important;
+  color: $primary-color !important;
+  font-weight: 500 !important;
 }
 
-.el-tag--success {
-  background-color: rgba($success, 0.1) !important;
-  border-color: rgba($success, 0.15) !important;
-  color: $success !important;
+:deep(.el-tag--success) {
+  background-color: rgba($success-color, 0.1) !important;
+  border-color: rgba($success-color, 0.15) !important;
+  color: $success-color !important;
 }
 
-.el-tag--danger {
-  background-color: rgba($error, 0.1) !important;
-  border-color: rgba($error, 0.15) !important;
-  color: $error !important;
+:deep(.el-tag--danger) {
+  background-color: rgba($danger-color, 0.1) !important;
+  border-color: rgba($danger-color, 0.15) !important;
+  color: $danger-color !important;
 }
 
-.el-table {
-  --el-table-border-color: #{rgba($black, 0.04)};
-  --el-table-header-bg-color: #{rgba($black, 0.02)};
-  --el-table-header-text-color: #{$dark};
-  --el-table-row-hover-bg-color: #{rgba($accent, 0.03)};
-  --el-table-text-color: #{$dark};
-  font-weight: $font-weight-normal !important;
+:deep(.el-table) {
+  --el-table-border-color: #{rgba(0, 0, 0, 0.04)};
+  --el-table-header-bg-color: #{rgba(0, 0, 0, 0.02)};
+  --el-table-header-text-color: #{$text-primary};
+  --el-table-row-hover-bg-color: #{rgba(59, 130, 246, 0.03)};
+  --el-table-text-color: #{$text-primary};
+  font-weight: 400 !important;
 
   th.el-table__cell {
-    font-weight: $font-weight-medium !important;
+    font-weight: 600 !important;
   }
 }
 
-.el-pagination {
+:deep(.el-pagination) {
   --el-pagination-button-bg-color: #{$bg-card};
-  --el-pagination-hover-color: #{$accent};
-  --el-pagination-text-color: #{$gray};
-  font-weight: $font-weight-medium !important;
+  --el-pagination-hover-color: #{$primary-color};
+  --el-pagination-text-color: #{$text-muted};
+  font-weight: 500 !important;
 }
 
-.el-input {
-  --el-input-border-color: #{rgba($black, 0.08)};
-  --el-input-focus-border-color: #{$accent};
-  --el-input-text-color: #{$dark};
-  font-weight: $font-weight-normal !important;
+:deep(.el-input) {
+  --el-input-border-color: #{rgba(0, 0, 0, 0.08)};
+  --el-input-focus-border-color: #{$primary-color};
+  --el-input-text-color: #{$text-primary};
+  font-weight: 400 !important;
 
   &:hover {
-    --el-input-border-color: #{rgba($black, 0.12)};
+    --el-input-border-color: #{rgba(0, 0, 0, 0.12)};
   }
 }
 
-.el-select {
-  --el-select-input-focus-border-color: #{$accent};
+:deep(.el-select) {
+  --el-select-input-focus-border-color: #{$primary-color};
 }
 
-.el-dialog {
+:deep(.el-dialog) {
   --el-dialog-border-radius: #{$radius-lg};
   --el-dialog-background-color: #{$bg-card};
-  border: $border-width solid $border-color;
+  border: 1px solid $border-base;
 }
 
-.el-message-box {
+:deep(.el-message-box) {
   --el-messagebox-border-radius: #{$radius-lg};
-  --el-messagebox-content-color: #{$dark};
+  --el-messagebox-content-color: #{$text-primary};
 }
 
-// 工具类 - 极简配色
-.text-accent { color: $accent; }
-.text-dark { color: $dark; }
-.text-gray { color: $gray; }
-.text-success { color: $success; }
-.text-error { color: $error; }
-.text-white { color: $white-bright; }
+:deep(.el-dropdown-menu) {
+  --el-dropdown-menu-bg-color: #{$bg-card};
+  --el-dropdown-menu-border-color: #{$border-base};
+  border-radius: $radius-md;
+  box-shadow: $shadow-lg;
+}
 
-.bg-dark { background-color: $dark; }
+:deep(.el-dropdown-menu__item) {
+  padding: 12px 16px;
+  font-size: 14px;
+  transition: all $transition-fast;
+
+  &:hover {
+    background: $bg-tertiary;
+    color: $text-primary;
+  }
+
+  &.is-disabled {
+    color: $text-muted;
+  }
+}
+
+// 工具类
+.text-accent { color: $primary-color; }
+.text-dark { color: $text-primary; }
+.text-gray { color: $text-muted; }
+.text-success { color: $success-color; }
+.text-error { color: $danger-color; }
+.text-white { color: $bg-primary; }
+
+.bg-dark { background-color: $text-primary; }
 .bg-card { background-color: $bg-card; }
-.bg-accent { background-color: $accent; }
+.bg-accent { background-color: $primary-color; }
 
 .rounded-md { border-radius: $radius-md; }
 .rounded-lg { border-radius: $radius-lg; }
@@ -264,7 +365,6 @@ html, body {
 .shadow-sm { box-shadow: $shadow-sm; }
 .shadow-md { box-shadow: $shadow-md; }
 .shadow-lg { box-shadow: $shadow-lg; }
-.shadow-accent { box-shadow: $shadow-accent; }
 
 .p-sm { padding: $spacing-sm; }
 .p-md { padding: $spacing-md; }

@@ -207,7 +207,7 @@ onMounted(() => {
 .page-title {
   font-size: $font-size-xl;
   font-weight: $font-weight-semibold;
-  color: $dark;
+  color: $text-primary;
 }
 
 .profile-card {
@@ -226,7 +226,7 @@ onMounted(() => {
     width: 100px;
     height: 100px;
     border-radius: $radius-xl;
-    background: $accent;
+    background: $primary-color;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -234,7 +234,7 @@ onMounted(() => {
 
   .avatar-icon {
     font-size: 48px;
-    color: $white-bright;
+    color: $bg-primary;
   }
 }
 
@@ -252,12 +252,12 @@ onMounted(() => {
   .form-label {
     font-size: $font-size-sm;
     font-weight: $font-weight-medium;
-    color: $gray;
+    color: $text-muted;
   }
 
   .form-value {
     font-size: $font-size-md;
-    color: $dark;
+    color: $text-primary;
     padding: $spacing-sm;
     background: rgba($black, 0.02);
     border-radius: $radius-sm;
