@@ -11,7 +11,12 @@ export function getStudentPage(params) {
   return request({
     url: '/students/page',
     method: 'get',
-    params
+    params: {
+      pageNum: params.pageNum || 1,
+      pageSize: params.pageSize || 10,
+      keyword: params.keyword || undefined,
+      classId: params.classId || undefined
+    }
   })
 }
 

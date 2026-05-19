@@ -1,0 +1,11 @@
+[
+    {
+        "studentNo": "2",
+        "realName": "student2",
+        "gender": 1,
+        "classId": 1,
+        "email": "student2@example.com",
+        "phone": "13800138011",
+        "password": "123456"
+    }
+]

@@ -5,13 +5,13 @@ import com.exam.online.exception.BusinessException;
 import com.exam.online.mapper.StudentMapper;
 import com.exam.online.mapper.ClassMapper;
 import com.exam.online.utils.PasswordUtil;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.Page;
+import com.exam.online.dto.PageDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
@@ -30,28 +30,55 @@ public class StudentService {
         return studentMapper.selectAll();
     }
 
-    public Page<Student> getByPage(Integer pageNum, Integer pageSize, String keyword, Integer classId) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Student> students = studentMapper.selectAll();
+    public PageDTO<Student> getByPage(Integer pageNum, Integer pageSize, String keyword, Integer classId) {
+        List<Student> allStudents = studentMapper.selectAll();
 
-        if (keyword != null && !keyword.isEmpty()) {
-            students = students.stream()
-                    .filter(s -> s.getStudentNo().contains(keyword) ||
-                            s.getRealName().contains(keyword) ||
-                            (s.getClassName() != null && s.getClassName().contains(keyword)))
-                    .toList();
-        }
-        if (classId != null) {
-            students = students.stream()
-                    .filter(s -> s.getClassId().equals(classId))
-                    .toList();
-        }
+        List<Student> filtered = allStudents.stream()
+                .filter(s -> {
+                    if (keyword != null && !keyword.isEmpty()) {
+                        return (s.getStudentNo() != null && s.getStudentNo().contains(keyword)) ||
+                               (s.getRealName() != null && s.getRealName().contains(keyword)) ||
+                               (s.getClassName() != null && s.getClassName().contains(keyword));
+                    }
+                    return true;
+                })
+                .filter(s -> {
+                    if (classId != null) {
+                        return s.getClassId() != null && s.getClassId().equals(classId);
+                    }
+                    return true;
+                })
+                .collect(Collectors.toList());
 
-        return (Page<Student>) students;
+        long total = filtered.size();
+        int fromIndex = (pageNum - 1) * pageSize;
+        if (fromIndex >= filtered.size()) {
+            return createEmptyPage(pageNum, pageSize);
+        }
+        int toIndex = Math.min(fromIndex + pageSize, filtered.size());
+        List<Student> pageList = filtered.subList(fromIndex, toIndex);
+
+        PageDTO<Student> dto = new PageDTO<>();
+        dto.setTotal(total);
+        dto.setPageNum(pageNum);
+        dto.setPageSize(pageSize);
+        dto.setPages((int) Math.ceil((double) total / pageSize));
+        dto.setList(pageList);
+        return dto;
     }
 
     public int countAll() {
         return studentMapper.countAll();
+    }
+
+    private PageDTO<Student> createEmptyPage(Integer pageNum, Integer pageSize) {
+        PageDTO<Student> dto = new PageDTO<>();
+        dto.setTotal(0L);
+        dto.setPageNum(pageNum);
+        dto.setPageSize(pageSize);
+        dto.setPages(0);
+        dto.setList(List.of());
+        return dto;
     }
 
     @Transactional
@@ -60,7 +87,11 @@ public class StudentService {
         if (existing != null) {
             throw new BusinessException(400, "学号已存在");
         }
-        student.setPassword(PasswordUtil.md5(student.getPassword()));
+        String password = student.getPassword();
+        if (password == null || password.isEmpty()) {
+            password = "123456";
+        }
+        student.setPassword(PasswordUtil.md5(password));
         student.setStatus(1);
         studentMapper.insert(student);
 

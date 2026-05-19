@@ -37,8 +37,8 @@ public class StudentController {
             @RequestParam(defaultValue = "10") Integer pageSize,
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) Integer classId) {
-        Page<Student> page = studentService.getByPage(pageNum, pageSize, keyword, classId);
-        return ResponseDTO.success(PageDTO.of(page));
+        PageDTO<Student> page = studentService.getByPage(pageNum, pageSize, keyword, classId);
+        return ResponseDTO.success(page);
     }
 
     @PostMapping("/add")
