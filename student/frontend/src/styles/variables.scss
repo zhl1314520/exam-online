@@ -1,0 +1,87 @@
+// 极简主义 - 黑白为主 + 点缀色
+// 主色调 - 简洁有力
+$black: #0A0A0A;          // 深邃黑
+$dark: #2D2D2D;           // 深灰色 - 侧边栏用
+$gray-dark: #3D3D3D;      // 浅黑
+$gray: #6A6A6A;           // 灰色
+$gray-light: #9A9A9A;     // 浅灰
+$light: #E5E5E5;          // 极浅灰
+$white: #FAFAFA;          // 纯白
+$white-bright: #FFFFFF;   // 亮白
+
+// 点缀色 - 强烈的视觉焦点
+$accent: #FF6B35;         // 活力橙 - 主要点缀色
+$accent-light: #FF8C5A;   // 浅橙
+$accent-dark: #E55A2B;    // 深橙
+
+// 功能色 - 保持专业感
+$success: #00C896;        // 青绿
+$warning: #FFB800;        // 金黄
+$error: #FF3B5C;          // 珊瑚红
+$info: #3B82F6;           // 蓝色
+
+// 背景系统 - 全局白色，侧边栏深灰
+$bg-primary: $white-bright;    // 主背景改为白色
+$bg-secondary: $white;          // 次级背景
+$bg-card: $white-bright;        // 卡片背景
+$bg-sidebar: $dark;             // 侧边栏深灰色
+$bg-gradient-start: $white-bright;
+$bg-gradient-end: $white-bright;
+
+// 动画曲线 - 简洁流畅
+$ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+$ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+$ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+$ease-slide: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+$ease-minimal: cubic-bezier(0.0, 0.0, 1.0, 1.0); // 线性，极简
+
+// 间距 - 更精细的控制
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 12px;
+$spacing-lg: 20px;
+$spacing-xl: 32px;
+$spacing-2xl: 48px;
+
+// 圆角 - 更锐利现代
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 12px;
+$radius-xl: 16px;
+$radius-full: 9999px;
+
+// 阴影 - 极简层次
+$shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+$shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+$shadow-md: 0 4px 8px rgba(0, 0, 0, 0.08);
+$shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.12);
+$shadow-xl: 0 16px 32px rgba(0, 0, 0, 0.16);
+$shadow-accent: 0 4px 12px rgba($accent, 0.3); // 点缀色阴影
+
+// 字体 - 高级感
+$font-family: 'Inter', 'SF Pro Display', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+$font-size-xs: 12px;
+$font-size-sm: 13px;
+$font-size-md: 14px;
+$font-size-lg: 16px;
+$font-size-xl: 18px;
+$font-size-2xl: 24px;
+$font-size-3xl: 32px;
+$font-size-4xl: 40px;
+
+// 字重 - 精细控制
+$font-weight-light: 300;
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+// 边框 - 极简线条
+$border-width: 1px;
+$border-color: rgba($black, 0.06);
+$border-color-dark: rgba($white, 0.1);
+
+// 过渡时间
+$transition-fast: 0.15s;
+$transition-normal: 0.25s;
+$transition-slow: 0.4s;

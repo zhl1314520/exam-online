@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exam.online.mapper.AdminMapper">
+
+    <resultMap id="AdminResultMap" type="com.exam.online.entity.Admin">
+        <id property="adminId" column="admin_id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="realName" column="real_name"/>
+        <result property="email" column="email"/>
+        <result property="phone" column="phone"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="lastLoginTime" column="last_login_time"/>
+    </resultMap>
+
+    <select id="selectById" resultMap="AdminResultMap">
+        SELECT * FROM admin WHERE admin_id = #{adminId}
+    </select>
+
+    <select id="selectByUsername" resultMap="AdminResultMap">
+        SELECT * FROM admin WHERE username = #{username}
+    </select>
+
+    <select id="selectAll" resultMap="AdminResultMap">
+        SELECT * FROM admin ORDER BY create_time DESC
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="adminId">
+        INSERT INTO admin (username, password, real_name, email, phone, status)
+        VALUES (#{username}, #{password}, #{realName}, #{email}, #{phone}, #{status})
+    </insert>
+
+    <update id="updateById">
+        UPDATE admin SET
+            username = #{username},
+            real_name = #{realName},
+            email = #{email},
+            phone = #{phone},
+            status = #{status}
+        WHERE admin_id = #{adminId}
+    </update>
+
+    <update id="updateLastLoginTime">
+        UPDATE admin SET last_login_time = NOW() WHERE admin_id = #{adminId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM admin WHERE admin_id = #{adminId}
+    </delete>
+</mapper>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exam.online.mapper.AnswerRecordMapper">
+
+    <resultMap id="AnswerRecordResultMap" type="com.exam.online.entity.AnswerRecord">
+        <id property="answerId" column="answer_id"/>
+        <result property="recordId" column="record_id"/>
+        <result property="questionId" column="question_id"/>
+        <result property="studentAnswer" column="student_answer"/>
+        <result property="isCorrect" column="is_correct"/>
+        <result property="score" column="score"/>
+        <result property="answerTime" column="answer_time"/>
+        <result property="questionContent" column="question_content"/>
+        <result property="questionType" column="question_type"/>
+        <result property="correctAnswer" column="correct_answer"/>
+    </resultMap>
+
+    <select id="selectByRecordId" resultMap="AnswerRecordResultMap">
+        SELECT ar.*, q.question_content, q.question_type, q.correct_answer
+        FROM answer_record ar
+        LEFT JOIN question q ON ar.question_id = q.question_id
+        WHERE ar.record_id = #{recordId}
+        ORDER BY ar.answer_time
+    </select>
+
+    <select id="countCorrectByRecordId" resultType="int">
+        SELECT COUNT(*) FROM answer_record WHERE record_id = #{recordId} AND is_correct = 1
+    </select>
+
+    <select id="sumScoreByRecordId" resultType="double">
+        SELECT COALESCE(SUM(score), 0) FROM answer_record WHERE record_id = #{recordId}
+    </select>
+
+    <update id="updateScore">
+        UPDATE answer_record SET score = #{score} WHERE answer_id = #{answerId}
+    </update>
+</mapper>

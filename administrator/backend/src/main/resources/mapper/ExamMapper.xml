@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exam.online.mapper.ExamMapper">
+
+    <resultMap id="ExamResultMap" type="com.exam.online.entity.Exam">
+        <id property="examId" column="exam_id"/>
+        <result property="examName" column="exam_name"/>
+        <result property="paperId" column="paper_id"/>
+        <result property="classId" column="class_id"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="status" column="status"/>
+        <result property="allowScreenSwitch" column="allow_screen_switch"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="paperName" column="paper_name"/>
+        <result property="className" column="class_name"/>
+        <result property="createName" column="create_name"/>
+        <result property="submitCount" column="submit_count"/>
+        <result property="passRate" column="pass_rate"/>
+    </resultMap>
+
+    <sql id="selectWithJoins">
+        SELECT e.*,
+            ep.paper_name,
+            c.class_name,
+            t.real_name AS create_name,
+            (SELECT COUNT(*) FROM exam_record er WHERE er.exam_id = e.exam_id AND er.status = 1) AS submit_count,
+            CASE WHEN e.status >= 2 THEN
+                (SELECT ROUND(SUM(CASE WHEN er2.total_score >= ep2.pass_score THEN 1 ELSE 0 END) / COUNT(*) * 100, 1)
+                 FROM exam_record er2
+                 JOIN exam_paper ep2 ON e.paper_id = ep2.paper_id
+                 WHERE er2.exam_id = e.exam_id AND er2.status = 1)
+            ELSE NULL END AS pass_rate
+        FROM exam e
+        LEFT JOIN exam_paper ep ON e.paper_id = ep.paper_id
+        LEFT JOIN class c ON e.class_id = c.class_id
+        LEFT JOIN teacher t ON e.create_by = t.teacher_id
+    </sql>
+
+    <select id="selectById" resultMap="ExamResultMap">
+        <include refid="selectWithJoins"/>
+        WHERE e.exam_id = #{examId}
+    </select>
+
+    <select id="selectAll" resultMap="ExamResultMap">
+        <include refid="selectWithJoins"/>
+        ORDER BY e.create_time DESC
+    </select>
+
+    <select id="selectByCondition" resultMap="ExamResultMap">
+        <include refid="selectWithJoins"/>
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (e.exam_name LIKE CONCAT('%', #{keyword}, '%')
+                OR ep.paper_name LIKE CONCAT('%', #{keyword}, '%')
+                OR c.class_name LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="status != null">
+                AND e.status = #{status}
+            </if>
+        </where>
+        ORDER BY e.create_time DESC
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="examId">
+        INSERT INTO exam (exam_name, paper_id, class_id, start_time, end_time, status, allow_screen_switch, create_by)
+        VALUES (#{examName}, #{paperId}, #{classId}, #{startTime}, #{endTime}, #{status}, #{allowScreenSwitch}, #{createBy})
+    </insert>
+
+    <update id="updateById">
+        UPDATE exam SET
+            exam_name = #{examName},
+            paper_id = #{paperId},
+            class_id = #{classId},
+            start_time = #{startTime},
+            end_time = #{endTime},
+            status = #{status},
+            allow_screen_switch = #{allowScreenSwitch}
+        WHERE exam_id = #{examId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM exam WHERE exam_id = #{examId}
+    </delete>
+</mapper>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>测试页面</title>
+  <style>
+    body { background: #f0f0f0; padding: 20px; }
+    h1 { color: red; }
+  </style>
+</head>
+<body>
+  <h1>如果您能看到这段文字，说明静态HTML能正常显示。</h1>
+  <div id="app"></div>
+  <script>
+    document.getElementById('app').innerHTML = '<p style="color:blue;font-size:20px;">JavaScript执行正常！</p>';
+    console.log('测试页面加载成功');
+  </script>
+</body>
+</html>

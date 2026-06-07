@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exam.online.mapper.ClazzMapper">
+
+    <resultMap id="ClazzResultMap" type="com.exam.online.entity.Clazz">
+        <id property="classId" column="class_id"/>
+        <result property="className" column="class_name"/>
+        <result property="classCode" column="class_code"/>
+        <result property="departmentId" column="department_id"/>
+        <result property="grade" column="grade"/>
+        <result property="studentCount" column="student_count"/>
+        <result property="createTime" column="create_time"/>
+        <result property="departmentName" column="department_name"/>
+    </resultMap>
+
+    <select id="selectById" resultMap="ClazzResultMap">
+        SELECT c.*, d.department_name
+        FROM class c
+        LEFT JOIN department d ON c.department_id = d.department_id
+        WHERE c.class_id = #{classId}
+    </select>
+
+    <select id="selectAll" resultMap="ClazzResultMap">
+        SELECT c.*, d.department_name
+        FROM class c
+        LEFT JOIN department d ON c.department_id = d.department_id
+        ORDER BY c.create_time DESC
+    </select>
+
+    <select id="selectByDepartmentId" resultMap="ClazzResultMap">
+        SELECT c.*, d.department_name
+        FROM class c
+        LEFT JOIN department d ON c.department_id = d.department_id
+        WHERE c.department_id = #{departmentId}
+        ORDER BY c.create_time DESC
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="classId">
+        INSERT INTO class (class_name, class_code, department_id, grade, student_count)
+        VALUES (#{className}, #{classCode}, #{departmentId}, #{grade}, #{studentCount})
+    </insert>
+
+    <update id="updateById">
+        UPDATE class SET
+            class_name = #{className},
+            class_code = #{classCode},
+            department_id = #{departmentId},
+            grade = #{grade},
+            student_count = #{studentCount}
+        WHERE class_id = #{classId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM class WHERE class_id = #{classId}
+    </delete>
+
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*) FROM class
+    </select>
+</mapper>

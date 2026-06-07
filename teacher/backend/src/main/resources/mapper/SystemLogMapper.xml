@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exam.online.mapper.SystemLogMapper">
+
+    <resultMap id="SystemLogResultMap" type="com.exam.online.entity.SystemLog">
+        <id property="logId" column="log_id"/>
+        <result property="userType" column="user_type"/>
+        <result property="userId" column="user_id"/>
+        <result property="operation" column="operation"/>
+        <result property="operationDetail" column="operation_detail"/>
+        <result property="ipAddress" column="ip_address"/>
+        <result property="createTime" column="create_time"/>
+        <result property="userName" column="user_name"/>
+    </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="logId">
+        INSERT INTO system_log (user_type, user_id, operation, operation_detail, ip_address, create_time)
+        VALUES (#{userType}, #{userId}, #{operation}, #{operationDetail}, #{ipAddress}, NOW())
+    </insert>
+
+    <select id="selectRecent" resultMap="SystemLogResultMap">
+        SELECT s.log_id, s.user_type, s.user_id, s.operation, s.operation_detail, s.ip_address, s.create_time,
+            (SELECT t.real_name FROM teacher t WHERE t.teacher_id = s.user_id) AS user_name
+        FROM system_log s
+        WHERE s.user_type = 2 AND s.user_id = #{userId}
+        ORDER BY s.create_time DESC
+        LIMIT #{limit}
+    </select>
+</mapper>

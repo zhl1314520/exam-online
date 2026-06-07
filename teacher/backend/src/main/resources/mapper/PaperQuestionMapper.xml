@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exam.online.mapper.PaperQuestionMapper">
+
+    <resultMap id="PaperQuestionResultMap" type="com.exam.online.entity.PaperQuestion">
+        <id property="id" column="id"/>
+        <result property="paperId" column="paper_id"/>
+        <result property="questionId" column="question_id"/>
+        <result property="questionOrder" column="question_order"/>
+        <result property="score" column="score"/>
+        <result property="questionContent" column="question_content"/>
+        <result property="questionType" column="question_type"/>
+        <result property="options" column="options"/>
+        <result property="correctAnswer" column="correct_answer"/>
+        <result property="subjectName" column="subject_name"/>
+    </resultMap>
+
+    <select id="selectByPaperId" resultMap="PaperQuestionResultMap">
+        SELECT pq.*, q.question_content, q.question_type, q.options, q.correct_answer, s.subject_name
+        FROM paper_question pq
+        LEFT JOIN question q ON pq.question_id = q.question_id
+        LEFT JOIN subject s ON q.subject_id = s.subject_id
+        WHERE pq.paper_id = #{paperId}
+        ORDER BY pq.question_order
+    </select>
+
+    <select id="selectByPaperIdAndQuestionId" resultMap="PaperQuestionResultMap">
+        SELECT pq.*, q.question_content, q.question_type, q.options, q.correct_answer, s.subject_name
+        FROM paper_question pq
+        LEFT JOIN question q ON pq.question_id = q.question_id
+        LEFT JOIN subject s ON q.subject_id = s.subject_id
+        WHERE pq.paper_id = #{paperId} AND pq.question_id = #{questionId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO paper_question (paper_id, question_id, question_order, score)
+        VALUES (#{paperId}, #{questionId}, #{questionOrder}, #{score})
+    </insert>
+
+    <update id="updateById">
+        UPDATE paper_question SET
+            question_order = #{questionOrder},
+            score = #{score}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteByPaperId">
+        DELETE FROM paper_question WHERE paper_id = #{paperId}
+    </delete>
+
+    <delete id="deleteById">
+        DELETE FROM paper_question WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteByPaperIdAndQuestionId">
+        DELETE FROM paper_question WHERE paper_id = #{paperId} AND question_id = #{questionId}
+    </delete>
+
+    <select id="countByPaperId" resultType="int">
+        SELECT COUNT(*) FROM paper_question WHERE paper_id = #{paperId}
+    </select>
+</mapper>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exam.student.mapper.AnswerRecordMapper">
+
+    <resultMap id="AnswerRecordResultMap" type="com.exam.student.entity.AnswerRecord">
+        <id property="answerId" column="answer_id"/>
+        <result property="recordId" column="record_id"/>
+        <result property="questionId" column="question_id"/>
+        <result property="studentAnswer" column="student_answer"/>
+        <result property="isCorrect" column="is_correct"/>
+        <result property="score" column="score"/>
+        <result property="answerTime" column="answer_time"/>
+    </resultMap>
+
+    <resultMap id="AnswerRecordWithQuestionResultMap" type="com.exam.student.entity.AnswerRecord" extends="AnswerRecordResultMap">
+        <result property="questionContent" column="question_content"/>
+        <result property="questionType" column="question_type"/>
+        <result property="options" column="options"/>
+        <result property="correctAnswer" column="correct_answer"/>
+    </resultMap>
+
+    <select id="selectById" resultMap="AnswerRecordResultMap">
+        SELECT * FROM answer_record WHERE answer_id = #{answerId}
+    </select>
+
+    <select id="selectByRecordId" resultMap="AnswerRecordWithQuestionResultMap">
+        SELECT
+            ar.*,
+            q.question_content,
+            q.question_type,
+            q.options,
+            q.correct_answer
+        FROM answer_record ar
+        LEFT JOIN question q ON ar.question_id = q.question_id
+        WHERE ar.record_id = #{recordId}
+        ORDER BY ar.answer_time ASC
+    </select>
+
+    <select id="selectByRecordAndQuestion" resultMap="AnswerRecordResultMap">
+        SELECT * FROM answer_record
+        WHERE record_id = #{recordId} AND question_id = #{questionId}
+        LIMIT 1
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="answerId">
+        INSERT INTO answer_record (record_id, question_id, student_answer, is_correct, score, answer_time)
+        VALUES (#{recordId}, #{questionId}, #{studentAnswer}, #{isCorrect}, #{score}, NOW())
+    </insert>
+
+    <update id="updateById">
+        UPDATE answer_record SET
+            student_answer = #{studentAnswer},
+            is_correct = #{isCorrect},
+            score = #{score},
+            answer_time = NOW()
+        WHERE answer_id = #{answerId}
+    </update>
+
+    <insert id="upsert">
+        INSERT INTO answer_record (record_id, question_id, student_answer, is_correct, score, answer_time)
+        VALUES (#{recordId}, #{questionId}, #{studentAnswer}, #{isCorrect}, #{score}, NOW())
+        ON DUPLICATE KEY UPDATE
+            student_answer = #{studentAnswer},
+            is_correct = #{isCorrect},
+            score = #{score},
+            answer_time = NOW()
+    </insert>
+</mapper>

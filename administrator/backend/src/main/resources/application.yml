@@ -1,0 +1,50 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: exam-online
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/exam_online?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false
+    username: root
+    password: 123456
+  data:
+    redis:
+      host: 172.25.26.203
+      port: 6379
+      password:
+      database: 0
+      timeout: 10000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-wait: -1ms
+          max-idle: 8
+          min-idle: 0
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml,classpath*:com/exam/online/mapper/*.xml
+  type-aliases-package: com.exam.online.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
+
+jwt:
+  secret: exam-online-jwt-secret-key-2024-very-long-string-for-security
+  expiration: 86400000
+  header: Authorization
+  prefix: Bearer
+
+logging:
+  level:
+    com.exam.online: debug
+    org.springframework: info

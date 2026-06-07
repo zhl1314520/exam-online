@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exam.online.mapper.SubjectMapper">
+
+    <resultMap id="SubjectResultMap" type="com.exam.online.entity.Subject">
+        <id property="subjectId" column="subject_id"/>
+        <result property="subjectName" column="subject_name"/>
+        <result property="subjectCode" column="subject_code"/>
+        <result property="departmentId" column="department_id"/>
+        <result property="credit" column="credit"/>
+        <result property="description" column="description"/>
+        <result property="createTime" column="create_time"/>
+        <result property="departmentName" column="department_name"/>
+    </resultMap>
+
+    <select id="selectById" resultMap="SubjectResultMap">
+        SELECT s.*, d.department_name
+        FROM subject s
+        LEFT JOIN department d ON s.department_id = d.department_id
+        WHERE s.subject_id = #{subjectId}
+    </select>
+
+    <select id="selectByCode" resultMap="SubjectResultMap">
+        SELECT s.*, d.department_name
+        FROM subject s
+        LEFT JOIN department d ON s.department_id = d.department_id
+        WHERE s.subject_code = #{subjectCode}
+    </select>
+
+    <select id="selectAll" resultMap="SubjectResultMap">
+        SELECT s.*, d.department_name
+        FROM subject s
+        LEFT JOIN department d ON s.department_id = d.department_id
+        ORDER BY s.create_time DESC
+    </select>
+
+    <select id="selectByDepartmentId" resultMap="SubjectResultMap">
+        SELECT s.*, d.department_name
+        FROM subject s
+        LEFT JOIN department d ON s.department_id = d.department_id
+        WHERE s.department_id = #{departmentId}
+        ORDER BY s.create_time DESC
+    </select>
+
+    <select id="selectByCondition" resultMap="SubjectResultMap">
+        SELECT s.*, d.department_name
+        FROM subject s
+        LEFT JOIN department d ON s.department_id = d.department_id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (s.subject_name LIKE CONCAT('%', #{keyword}, '%')
+                OR s.subject_code LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="departmentId != null">
+                AND s.department_id = #{departmentId}
+            </if>
+        </where>
+        ORDER BY s.create_time DESC
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="subjectId">
+        INSERT INTO subject (subject_name, subject_code, department_id, credit, description)
+        VALUES (#{subjectName}, #{subjectCode}, #{departmentId}, #{credit}, #{description})
+    </insert>
+
+    <update id="updateById">
+        UPDATE subject SET
+            subject_name = #{subjectName},
+            subject_code = #{subjectCode},
+            department_id = #{departmentId},
+            credit = #{credit},
+            description = #{description}
+        WHERE subject_id = #{subjectId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM subject WHERE subject_id = #{subjectId}
+    </delete>
+</mapper>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exam.online.mapper.DepartmentMapper">
+
+    <resultMap id="DepartmentResultMap" type="com.exam.online.entity.Department">
+        <id property="departmentId" column="department_id"/>
+        <result property="departmentName" column="department_name"/>
+        <result property="departmentCode" column="department_code"/>
+        <result property="description" column="description"/>
+        <result property="createTime" column="create_time"/>
+        <result property="subjectNames" column="subject_names"/>
+        <result property="teacherCount" column="teacher_count"/>
+        <result property="classCount" column="class_count"/>
+        <result property="studentCount" column="student_count"/>
+    </resultMap>
+
+    <resultMap id="DepartmentStatisticsResultMap" type="com.exam.online.dto.DepartmentStatisticsDTO">
+        <result property="departmentName" column="department_name"/>
+        <result property="teacherCount" column="teacher_count"/>
+        <result property="classCount" column="class_count"/>
+        <result property="studentCount" column="student_count"/>
+        <result property="examCount" column="exam_count"/>
+    </resultMap>
+
+    <select id="selectById" resultMap="DepartmentResultMap">
+        SELECT d.*,
+            (SELECT GROUP_CONCAT(s.subject_name SEPARATOR '、') FROM subject s WHERE s.department_id = d.department_id) AS subject_names,
+            (SELECT COUNT(*) FROM teacher t WHERE t.department_id = d.department_id) AS teacher_count,
+            (SELECT COUNT(*) FROM class c WHERE c.department_id = d.department_id) AS class_count,
+            (SELECT COALESCE(SUM(c2.student_count), 0) FROM class c2 WHERE c2.department_id = d.department_id) AS student_count
+        FROM department d WHERE d.department_id = #{departmentId}
+    </select>
+
+    <select id="selectAll" resultMap="DepartmentResultMap">
+        SELECT d.*,
+            (SELECT GROUP_CONCAT(s.subject_name SEPARATOR '、') FROM subject s WHERE s.department_id = d.department_id) AS subject_names,
+            (SELECT COUNT(*) FROM teacher t WHERE t.department_id = d.department_id) AS teacher_count,
+            (SELECT COUNT(*) FROM class c WHERE c.department_id = d.department_id) AS class_count,
+            (SELECT COALESCE(SUM(c2.student_count), 0) FROM class c2 WHERE c2.department_id = d.department_id) AS student_count
+        FROM department d ORDER BY d.create_time DESC
+    </select>
+
+    <select id="selectByKeyword" resultMap="DepartmentResultMap">
+        SELECT d.*,
+            (SELECT GROUP_CONCAT(s.subject_name SEPARATOR '、') FROM subject s WHERE s.department_id = d.department_id) AS subject_names,
+            (SELECT COUNT(*) FROM teacher t WHERE t.department_id = d.department_id) AS teacher_count,
+            (SELECT COUNT(*) FROM class c WHERE c.department_id = d.department_id) AS class_count,
+            (SELECT COALESCE(SUM(c2.student_count), 0) FROM class c2 WHERE c2.department_id = d.department_id) AS student_count
+        FROM department d
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (d.department_name LIKE CONCAT('%', #{keyword}, '%')
+                     OR d.department_code LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY d.create_time DESC
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="departmentId">
+        INSERT INTO department (department_name, department_code, description)
+        VALUES (#{departmentName}, #{departmentCode}, #{description})
+    </insert>
+
+    <update id="updateById">
+        UPDATE department SET
+            department_name = #{departmentName},
+            department_code = #{departmentCode},
+            description = #{description}
+        WHERE department_id = #{departmentId}
+    </update>
+
+    <select id="selectByCode" resultMap="DepartmentResultMap">
+        SELECT * FROM department WHERE department_code = #{departmentCode} LIMIT 1
+    </select>
+
+    <delete id="deleteById">
+        DELETE FROM department WHERE department_id = #{departmentId}
+    </delete>
+
+    <select id="selectDepartmentStatistics" resultMap="DepartmentStatisticsResultMap">
+        SELECT
+            d.department_name,
+            COALESCE(COUNT(DISTINCT t.teacher_id), 0) AS teacher_count,
+            COALESCE(COUNT(DISTINCT c.class_id), 0) AS class_count,
+            COALESCE(SUM(c.student_count), 0) AS student_count,
+            COALESCE(COUNT(DISTINCT e.exam_id), 0) AS exam_count
+        FROM department d
+        LEFT JOIN teacher t ON d.department_id = t.department_id
+        LEFT JOIN class c ON d.department_id = c.department_id
+        LEFT JOIN exam e ON c.class_id = e.class_id
+        GROUP BY d.department_id, d.department_name
+        ORDER BY d.department_name
+    </select>
+</mapper>

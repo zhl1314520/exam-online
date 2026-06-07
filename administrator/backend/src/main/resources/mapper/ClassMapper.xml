@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exam.online.mapper.ClassMapper">
+
+    <resultMap id="ClassResultMap" type="com.exam.online.entity.Class">
+        <id property="classId" column="class_id"/>
+        <result property="className" column="class_name"/>
+        <result property="classCode" column="class_code"/>
+        <result property="departmentId" column="department_id"/>
+        <result property="grade" column="grade"/>
+        <result property="studentCount" column="student_count"/>
+        <result property="createTime" column="create_time"/>
+        <result property="departmentName" column="department_name"/>
+    </resultMap>
+
+    <select id="selectById" resultMap="ClassResultMap">
+        SELECT c.*, d.department_name
+        FROM class c
+        LEFT JOIN department d ON c.department_id = d.department_id
+        WHERE c.class_id = #{classId}
+    </select>
+
+    <select id="selectByClassCode" resultMap="ClassResultMap">
+        SELECT c.*, d.department_name
+        FROM class c
+        LEFT JOIN department d ON c.department_id = d.department_id
+        WHERE c.class_code = #{classCode}
+    </select>
+
+    <select id="selectAll" resultMap="ClassResultMap">
+        SELECT c.*, d.department_name
+        FROM class c
+        LEFT JOIN department d ON c.department_id = d.department_id
+        ORDER BY c.create_time DESC
+    </select>
+
+    <select id="selectByCondition" resultMap="ClassResultMap">
+        SELECT c.*, d.department_name
+        FROM class c
+        LEFT JOIN department d ON c.department_id = d.department_id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (c.class_name LIKE CONCAT('%', #{keyword}, '%')
+                OR c.class_code LIKE CONCAT('%', #{keyword}, '%')
+                OR d.department_name LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="departmentId != null">
+                AND c.department_id = #{departmentId}
+            </if>
+        </where>
+        ORDER BY c.create_time DESC
+    </select>
+
+    <select id="selectByDepartmentId" resultMap="ClassResultMap">
+        SELECT c.*, d.department_name
+        FROM class c
+        LEFT JOIN department d ON c.department_id = d.department_id
+        WHERE c.department_id = #{departmentId}
+        ORDER BY c.create_time DESC
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="classId">
+        INSERT INTO class (class_name, class_code, department_id, grade, student_count)
+        VALUES (#{className}, #{classCode}, #{departmentId}, #{grade}, #{studentCount})
+    </insert>
+
+    <update id="updateById">
+        UPDATE class SET
+            class_name = #{className},
+            class_code = #{classCode},
+            department_id = #{departmentId},
+            grade = #{grade}
+        WHERE class_id = #{classId}
+    </update>
+
+    <update id="updateStudentCount">
+        UPDATE class SET student_count = #{count} WHERE class_id = #{classId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM class WHERE class_id = #{classId}
+    </delete>
+</mapper>

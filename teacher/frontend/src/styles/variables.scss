@@ -1,0 +1,67 @@
+// 白色系主题变量
+
+// 背景色 - 白色系
+$bg-primary: #FFFFFF;
+$bg-secondary: #F8FAFC;
+$bg-tertiary: #F1F5F9;
+$bg-card: #FFFFFF;
+$bg-hover: #F1F5F9;
+$bg-sidebar: #FFFFFF;
+
+// 文字色
+$text-primary: #1E293B;
+$text-secondary: #64748B;
+$text-muted: #94A3B8;
+$text-tertiary: #CBD5E1;
+
+// 强调色 - 蓝色系
+$primary-color: #3B82F6;
+$primary-color-light: #60A5FA;
+$primary-dark: #2563EB;
+$accent: #F59E0B;
+$success-color: #10B981;
+$warning-color: #F59E0B;
+$danger-color: #EF4444;
+$info-color: #0EA5E9;
+$accent-mint: #10B981;
+$accent-amber: #F59E0B;
+$accent-coral: #EF4444;
+$accent-sky: #0EA5E9;
+
+// 边框色
+$border-base: #E2E8F0;
+$border-light: #F1F5F9;
+$border-dark: #CBD5E1;
+
+// 阴影 - 浅色主题适配
+$shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+$shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+$shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+$shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+// 间距
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+$spacing-2xl: 40px;
+
+// 圆角
+$radius-sm: 6px;
+$radius-md: 10px;
+$radius-lg: 16px;
+$radius-xl: 24px;
+
+// 字体
+$font-sans: 'Space Grotesk', sans-serif;
+$font-mono: 'JetBrains Mono', monospace;
+
+// 过渡
+$transition-fast: 150ms;
+$transition-normal: 300ms;
+
+// 动画曲线
+$ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+$ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+$ease-minimal: cubic-bezier(0.0, 0.0, 1.0, 1.0);

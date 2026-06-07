@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exam.online.mapper.ExamPaperMapper">
+
+    <resultMap id="ExamPaperResultMap" type="com.exam.online.entity.ExamPaper">
+        <id property="paperId" column="paper_id"/>
+        <result property="paperName" column="paper_name"/>
+        <result property="subjectId" column="subject_id"/>
+        <result property="totalScore" column="total_score"/>
+        <result property="passScore" column="pass_score"/>
+        <result property="duration" column="duration"/>
+        <result property="questionCount" column="question_count"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <select id="selectById" resultMap="ExamPaperResultMap">
+        SELECT * FROM exam_paper WHERE paper_id = #{paperId}
+    </select>
+
+    <select id="selectAll" resultMap="ExamPaperResultMap">
+        SELECT * FROM exam_paper ORDER BY create_time DESC
+    </select>
+</mapper>
